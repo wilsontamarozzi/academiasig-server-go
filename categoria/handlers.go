@@ -17,12 +17,12 @@ import (
 	Rota: /categorias.json
 */
 func GetCategorias(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	con := database.GetConnection()
 
-	var categorias Categorias	
+	categorias := CategoriaLancamento{}
 
-	con.Table("categoria_lancamento").Find(&categorias)
+	con.Find(&categorias)
 
 	json.NewEncoder(w).Encode(categorias)
 }
@@ -39,9 +39,9 @@ func GetCategoria(w http.ResponseWriter, r *http.Request) {
 
 	con := database.GetConnection()
 
-	var categoria Categoria
+	categoria := CategoriaLancamento{}
 
-	con.Table("categoria_lancamento").First(&categoria, id)
+	con.First(&categoria, id)
 
 	json.NewEncoder(w).Encode(categoria)
 }
@@ -65,10 +65,9 @@ func GetCategoriaPesquisa(w http.ResponseWriter, r *http.Request) {
 
 	con := database.GetConnection()
 
-	var categorias Categorias
+	categorias := CategoriaLancamento{}
 
-	con.Table("categoria_lancamento").
-		Where("categoria_id = ?", categoriaId).
+	con.Where("categoria_id = ?", categoriaId).
 			Or("categoria_grupo_id = ?", categoriaGrupoId).
 			Or("nome LIKE ?", nome).
 			Or("tipo = ?", tipo).
@@ -83,19 +82,19 @@ func CreateCategoria(w http.ResponseWriter, r *http.Request) {
 	categoriaGrupoId, _	:= strconv.ParseInt(r.FormValue("categoriaGrupoId"), 0, 64)
 	nome 				:= r.FormValue("nome")
 	
-	var grupoCategoria categoriagrupo.GrupoCategoria
+	var grupoCategoria categoriagrupo.CategoriaLancamentoGrupo
 
 	con := database.GetConnection()
 
-	con.Table("categoria_lancamento_grupo").First(&grupoCategoria, categoriaGrupoId)
+	con.First(&grupoCategoria, categoriaGrupoId)
 
-	categoria := Categoria{
+	categoria := CategoriaLancamento{
 		CategoriaGrupoId: categoriaGrupoId,
 		Nome: nome,
 		Tipo: grupoCategoria.Tipo,
 	}
 
-	con.Table("categoria_lancamento").Create(&categoria)
+	con.Create(&categoria)
 
 	json.NewEncoder(w).Encode(categoria)
 }

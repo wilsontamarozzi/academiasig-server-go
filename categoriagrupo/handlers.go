@@ -1,6 +1,7 @@
 package categoriagrupo
 
 import (
+	//"fmt"
 	"net/http"
 	"encoding/json"
 	"strconv"
@@ -19,9 +20,9 @@ func GetGruposCategoria(w http.ResponseWriter, r *http.Request) {
 	
 	con := database.GetConnection()
 
-	var gruposCategoria GruposCategoria	
+	gruposCategoria := CategoriaLancamentoGrupos{}
 
-	con.Table("categoria_lancamento_grupo").Find(&gruposCategoria)
+	con.Preload("CategoriasLancamento").Find(&gruposCategoria)
 
 	json.NewEncoder(w).Encode(gruposCategoria)
 }
@@ -38,9 +39,9 @@ func GetGrupoCategoria(w http.ResponseWriter, r *http.Request) {
 
 	con := database.GetConnection()
 
-	var grupoCategoria GrupoCategoria
+	var grupoCategoria CategoriaLancamentoGrupo
 
-	con.Table("categoria_lancamento_grupo").First(&grupoCategoria, id)
+	con.Preload("CategoriasLancamento").First(&grupoCategoria, id)
 
 	json.NewEncoder(w).Encode(grupoCategoria)
 }
@@ -63,9 +64,9 @@ func GetGrupoCategoriaPesquisa(w http.ResponseWriter, r *http.Request) {
 
 	con := database.GetConnection()
 
-	var gruposCategoria GruposCategoria
+	var gruposCategoria CategoriaLancamentoGrupos
 
-	con.Table("categoria_lancamento_grupo").
+	con.Preload("CategoriasLancamento").
 		Where("categoria_grupo_id = ?", categoriaGrupoId).
 			Or("nome LIKE ?", nome).
 			Or("tipo = ?", tipo).

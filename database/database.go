@@ -16,6 +16,9 @@ func GetConnection() *gorm.DB {
   		//fmt.Println("Houve uma falha ao conectar ao banco de dados")
   	}
 
+  	//Faz com que o nome dos objetos fique no singular
+  	db.SingularTable(true)
+
   	//fmt.Println(reflect.TypeOf(db))
   	return db
 }
