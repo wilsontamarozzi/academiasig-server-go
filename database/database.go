@@ -9,7 +9,7 @@ import (
 )
 
 func GetConnection() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:02371890@tcp(192.168.0.13:3306)/sisacademia2?charset=utf8&parseTime=True")
+	db, err := gorm.Open("mysql", "root:02371890@tcp(wilsontamarozzi.dyndns.org:3306)/sisacademia2?charset=utf8&parseTime=True")
 	
 	if err != nil {
     	panic("Houve uma falha ao conectar ao banco de dados")
