@@ -23,7 +23,7 @@ func GetCidades(w http.ResponseWriter, r *http.Request) {
 
 	var cidades models.Cidades	
 
-	con.Table("cidade").Find(&cidades)
+	con.Preload("Estado").Find(&cidades)
 
 	json.NewEncoder(w).Encode(cidades)
 }
@@ -43,7 +43,7 @@ func GetCidade(w http.ResponseWriter, r *http.Request) {
 
 	var cidade models.Cidade
 
-	con.Table("cidade").First(&cidade, id)
+	con.Preload("Estado").First(&cidade, id)
 
 	json.NewEncoder(w).Encode(cidade)
 }
@@ -67,7 +67,7 @@ func GetCidadePesquisa(w http.ResponseWriter, r *http.Request) {
 
 	var cidades models.Cidades
 
-	con.Table("cidade").
+	con.Preload("Estado").
 		Where("cidade_id = ?", id).
 			Or("cidade_nome LIKE ?", nome).
 		Find(&cidades)
