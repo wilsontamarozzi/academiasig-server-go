@@ -5,16 +5,17 @@ import (
 )
 
 type PessoaFisica struct {
-	Id 					int64		`gorm:"column:pessoa_fisica_id; primary_key; AUTO_INCREMENT" json:"pessoaFisicaId"`
-	PessoaId 			int64 		`gorm:"column:pessoa_id" json:"pessoaId"`
+	PessoaFisicaId 		int64		`gorm:"primary_key; AUTO_INCREMENT" json:"pessoaFisicaId"`
+	PessoaId 			int64 		`json:"pessoaId"`
 	Sexo				bool		`json:"sexo"`
-	DataNascimento		time.Time 	`gorm:"column:data_nascimento: json:"dataNascimento"`
+	DataNascimento		time.Time 	`json:"dataNascimento"`
 	Cpf 				string		`json:"cpf"`
 	Rg					string		`json:"rg"`
-	TelefoneResidencial	string		`gorm:"column:telefone_residencial" json:"telefoneResidencial"`
-	TelefoneCelular		string		`gorm:"column:telefone_celular" json:"telefoneCelular"`
-	TelefoneEmpresa		string		`gorm:"column:telefone_empresa" json:"telefoneEmpresa"`
-	UsuarioSistema		bool		`gorm:"column:usuario_sistema" json:"usuarioSistema"`
+	TelefoneResidencial	string		`json:"telefoneResidencial"`
+	TelefoneCelular		string		`json:"telefoneCelular"`
+	TelefoneEmpresa		string		`json:"telefoneEmpresa"`
+	UsuarioSistema		bool		`json:"usuarioSistema"`
+	Usuario				*Usuario 	`gorm:"foreignkey:pessoa_fisica_id; associationforeignkey:pessoa_fisica_id"`
 }
 
 type PessoasFisica []PessoaFisica

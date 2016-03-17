@@ -25,7 +25,7 @@ func GetPessoas(w http.ResponseWriter, r *http.Request) {
 	var pessoas models.Pessoas	
 
 	//Faz a busca no banco de dados
-	con.Table("pessoa").Find(&pessoas)
+	con.Preload("PessoaFisica.Usuario").Preload("PessoaJuridica").Find(&pessoas)
 
 	//Converte e exibe o objeto Pessoas in JSON
 	json.NewEncoder(w).Encode(pessoas)
@@ -51,7 +51,7 @@ func GetPessoa(w http.ResponseWriter, r *http.Request) {
 	var pessoa models.Pessoa
 
 	//Faz a Busca no banco de dados
-	con.Table("pessoa").First(&pessoa, id)
+	con.First(&pessoa, id)
 
 	//Converte e exibe o objeto Pessoa in JSON
 	json.NewEncoder(w).Encode(pessoa)
@@ -84,8 +84,7 @@ func GetPessoaPesquisa(w http.ResponseWriter, r *http.Request) {
 	var pessoas models.Pessoas
 
 	//Faz a Busca no banco de dados
-	con.Table("pessoa").
-		Where("pessoa_id = ?", id).
+	con.Where("pessoa_id = ?", id).
 			Or("nome LIKE ?", nome).
 			Or("ativo = ?", ativo).
 			Or("email = ?", email).
