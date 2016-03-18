@@ -21,9 +21,21 @@ func GetCidades(w http.ResponseWriter, r *http.Request) {
 
 	con := database.GetConnection()
 
+	con.LogMode(true)
+
 	var cidades models.Cidades	
 
-	con.Preload("Estado").Preload("Estado.Pais").Find(&cidades)
+	//con.Limit(10).Preload("Estado").Preload("Estado.Pais").Find(&cidades)
+	
+	con.Limit(2).Find(&cidades)
+
+    for i, _ := range cidades {
+        con.Model(cidades[i]).
+        	Related(&cidades[i].Estado).
+        	Related(&cidades[i].Estado.Pais)
+    }
+
+    con.LogMode(false)
 
 	json.NewEncoder(w).Encode(cidades)
 }

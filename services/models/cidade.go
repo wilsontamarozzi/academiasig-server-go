@@ -2,8 +2,7 @@ package models
 
 type Cidade struct {
 	CidadeId 		int64	`gorm:"primary_key;" sql:"AUTO_INCREMENT"`
-	EstadoId		int64	
-	PaisId			int64	
+	EstadoId 		int64
 	Nome			string 	`gorm:"column:cidade_nome"`
 	Uf				string	
 	Pais 			string	
