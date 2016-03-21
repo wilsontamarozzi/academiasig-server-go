@@ -6,9 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"AcademiaSIG-API/database"
-	//"AcademiaSIG-API/services"
-	"AcademiaSIG-API/services/models"
+	"AcademiaSIG-API/services"
 )
 
 /*	@autor: Wilson T.J.
@@ -19,11 +17,7 @@ import (
 */
 func GetBancos(w http.ResponseWriter, r *http.Request) {
 
-	con := database.GetConnection()
-
-	var bancos models.Bancos	
-
-	con.Table("banco").Find(&bancos)
+	bancos := services.GetBancos()
 
 	json.NewEncoder(w).Encode(bancos)
 }
@@ -36,14 +30,10 @@ func GetBancos(w http.ResponseWriter, r *http.Request) {
 */
 func GetBanco(w http.ResponseWriter, r *http.Request) {
 
-	vars 	:= mux.Vars(r)
-	id, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	vars 		:= mux.Vars(r)
+	bancoId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
-	con := database.GetConnection()
-
-	var banco models.Banco
-
-	con.Table("banco").First(&banco, id)
+	banco := services.GetBanco(bancoId)
 
 	json.NewEncoder(w).Encode(banco)
 }
@@ -56,23 +46,11 @@ func GetBanco(w http.ResponseWriter, r *http.Request) {
 */
 func GetBancoPesquisa(w http.ResponseWriter, r *http.Request) {
 
-	id, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	nome 	:= r.FormValue("nome")
-	numero 	:= r.FormValue("numero")
+	bancoId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
+	nome 		:= r.FormValue("nome")
+	numero 		:= r.FormValue("numero")
 
-	if nome != "" {
-		nome = "%" + nome + "%"
-	}
-
-	con := database.GetConnection()
-
-	var bancos models.Bancos
-
-	con.Table("banco").
-		Where("banco_id = ?", id).
-			Or("nome LIKE ?", nome).
-			Or("numero = ?", numero).
-		Find(&bancos)
+	bancos := services.GetBancoPesquisa(bancoId, nome, numero)
 
 	json.NewEncoder(w).Encode(bancos)
 }

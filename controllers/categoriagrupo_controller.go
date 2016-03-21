@@ -1,15 +1,12 @@
 package controllers
 
 import (
-	//"fmt"
 	"net/http"
 	"encoding/json"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"AcademiaSIG-API/database"
-	//"AcademiaSIG-API/services"
-	"AcademiaSIG-API/services/models"
+	"AcademiaSIG-API/services"
 )
 
 /*	@autor: Wilson T.J.
@@ -19,12 +16,8 @@ import (
 	Rota: /categorias.json
 */
 func GetGruposCategoria(w http.ResponseWriter, r *http.Request) {
-	
-	con := database.GetConnection()
 
-	gruposCategoria := models.CategoriaLancamentoGrupos{}
-
-	con.Preload("CategoriasLancamento").Find(&gruposCategoria)
+	gruposCategoria := services.GetGruposCategoria()
 
 	json.NewEncoder(w).Encode(gruposCategoria)
 }
@@ -36,14 +29,11 @@ func GetGruposCategoria(w http.ResponseWriter, r *http.Request) {
 	Rota: /categorias/{id:[0-9]+}.json
 */
 func GetGrupoCategoria(w http.ResponseWriter, r *http.Request) {
-	vars 	:= mux.Vars(r)
-	id, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
-	con := database.GetConnection()
+	vars 		:= mux.Vars(r)
+	grupoId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
-	var grupoCategoria models.CategoriaLancamentoGrupo
-
-	con.Preload("CategoriasLancamento").First(&grupoCategoria, id)
+	grupoCategoria := services.GetGrupoCategoria(grupoId)
 
 	json.NewEncoder(w).Encode(grupoCategoria)
 }
@@ -56,23 +46,11 @@ func GetGrupoCategoria(w http.ResponseWriter, r *http.Request) {
 */
 func GetGrupoCategoriaPesquisa(w http.ResponseWriter, r *http.Request) {
 
-	categoriaGrupoId, _	:= strconv.ParseInt(r.FormValue("categoriaGrupoId"), 0, 64)
-	nome 				:= r.FormValue("nome")
-	tipo 				:= r.FormValue("tipo")
+	grupoId, _	:= strconv.ParseInt(r.FormValue("categoriaGrupoId"), 0, 64)
+	nome 		:= r.FormValue("nome")
+	tipo 		:= r.FormValue("tipo")
 
-	if nome != "" {
-		nome = "%" + nome + "%"
-	}
-
-	con := database.GetConnection()
-
-	var gruposCategoria models.CategoriaLancamentoGrupos
-
-	con.Preload("CategoriasLancamento").
-		Where("categoria_grupo_id = ?", categoriaGrupoId).
-			Or("nome LIKE ?", nome).
-			Or("tipo = ?", tipo).
-		Find(&gruposCategoria)
+	gruposCategoria := services.GetGrupoCategoriaPesquisa(grupoId, nome, tipo)
 
 	json.NewEncoder(w).Encode(gruposCategoria)
 }

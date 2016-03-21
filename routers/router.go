@@ -24,6 +24,7 @@ func InitRoutes() *mux.Router {
     router = AddRoutesCategoria(router)
     router = AddRoutesCategoriaGrupo(router)
     router = AddRoutesCidade(router)
+    router = AddRoutesConta(router)
 	
 	return router
 }
