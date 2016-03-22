@@ -43,6 +43,6 @@ var routesCategoria = Routes{
         "saveCategoria",
         "POST",
         "/save.json",
-        controllers.CreateCategoria,
+        controllers.SaveCategoria,
     },
 }

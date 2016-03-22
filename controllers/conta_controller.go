@@ -6,9 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"AcademiaSIG-API/database"
-	//"AcademiaSIG-API/services"
-	"AcademiaSIG-API/services/models"
+	"AcademiaSIG-API/services"
 )
 
 /*	@autor: Wilson T.J.
@@ -19,14 +17,7 @@ import (
 */
 func GetContas(w http.ResponseWriter, r *http.Request) {
 
-	con := database.GetConnection()
-
-	var contas models.Contas	
-
-	con.Preload("Banco").
-		Preload("Titular").
-		Preload("Operadora").
-		Find(&contas)
+	contas := services.GetContas()	
 
 	json.NewEncoder(w).Encode(contas)
 }
@@ -40,16 +31,9 @@ func GetContas(w http.ResponseWriter, r *http.Request) {
 func GetConta(w http.ResponseWriter, r *http.Request) {
 
 	vars 	:= mux.Vars(r)
-	id, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	contaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
-	con := database.GetConnection()
-
-	var conta models.Conta
-
-	con.Preload("Banco").
-		Preload("Titular").
-		Preload("Operadora").
-		First(&conta, id)
+	conta := services.GetConta(contaId)	
 
 	json.NewEncoder(w).Encode(conta)
 }
@@ -62,25 +46,10 @@ func GetConta(w http.ResponseWriter, r *http.Request) {
 */
 func GetContaPesquisa(w http.ResponseWriter, r *http.Request) {
 
-	id, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	nome 	:= r.FormValue("nome")
-	numero 	:= r.FormValue("numero")
+	contaId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
+	descricao	:= r.FormValue("descricao")
 
-	if nome != "" {
-		nome = "%" + nome + "%"
-	}
-
-	con := database.GetConnection()
-
-	var contas models.Contas
-
-	con.Preload("Banco").
-		Preload("Titular").
-		Preload("Operadora").
-		Where("conta_id = ?", id).
-			Or("nome LIKE ?", nome).
-			Or("numero = ?", numero).
-		Find(&contas)
+	contas := services.GetContaPesquisa(contaId, descricao)
 
 	json.NewEncoder(w).Encode(contas)
 }
