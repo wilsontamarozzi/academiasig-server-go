@@ -25,18 +25,18 @@ var routesPessoaFisica = Routes{
         "getPessoas",
         "GET",
         "/lista.json",
-        controllers.GetPessoas,
+        controllers.GetPessoasFisica,
     },
     Route{
         "getPessoa",
         "GET",
         "/{id:[0-9]+}.json",
-        controllers.GetPessoa,
+        controllers.GetPessoaFisica,
     },
     Route{
         "getPessoaPesquisa",
         "GET",
         "/pesquisa.json",
-        controllers.GetPessoaPesquisa,
+        controllers.GetPessoasFisicaPesquisa,
     },
 }

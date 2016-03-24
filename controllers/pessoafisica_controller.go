@@ -6,9 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"AcademiaSIG-API/database"
-	//"AcademiaSIG-API/services"
-	"AcademiaSIG-API/services/models"
+	"AcademiaSIG-API/services"
 )
 
 /*	@autor: Wilson T.J.
@@ -19,11 +17,7 @@ import (
 */
 func GetPessoasFisica(w http.ResponseWriter, r *http.Request) {
 
-	con := database.GetConnection()
-
-	var pessoasFisica models.PessoasFisica
-
-	con.Table("pessoa_fisica").Find(&pessoasFisica)
+	pessoasFisica := services.GetPessoasFisica()
 
 	json.NewEncoder(w).Encode(pessoasFisica)
 }
@@ -36,14 +30,10 @@ func GetPessoasFisica(w http.ResponseWriter, r *http.Request) {
 */
 func GetPessoaFisica(w http.ResponseWriter, r *http.Request) {
 
-	vars 	:= mux.Vars(r)
-	id, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	vars 				:= mux.Vars(r)
+	pessoaFisicaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
-	con := database.GetConnection()
-
-	var pessoaFisica models.PessoaFisica
-
-	con.Table("pessoa_fisica").First(&pessoaFisica, id)
+	pessoaFisica := services.GetPessoaFisica(pessoaFisicaId)
 
 	json.NewEncoder(w).Encode(pessoaFisica)
 }
@@ -54,22 +44,12 @@ func GetPessoaFisica(w http.ResponseWriter, r *http.Request) {
 
 	Rota: /pessoas/pesquisa.json?id=ID&nome=NOME
 */
-func GetPessoaFisicaPesquisa(w http.ResponseWriter, r *http.Request) {
+func GetPessoasFisicaPesquisa(w http.ResponseWriter, r *http.Request) {
 
-	id, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	nome 	:= r.FormValue("nome")
+	pessoaFisicaId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
+	//nome 				:= r.FormValue("nome")
 
-	if nome != "" {
-		nome = "%" + nome + "%"
-	}
+	pessoasFisica := services.GetPessoasFisicaPesquisa(pessoaFisicaId)
 
-	con := database.GetConnection()
-
-	var pessoaFisica models.PessoaFisica
-
-	con.Table("pessoa_fisica").
-		Where("pessoa_id = ?", id).
-		First(&pessoaFisica)
-
-	json.NewEncoder(w).Encode(pessoaFisica)
+	json.NewEncoder(w).Encode(pessoasFisica)
 }

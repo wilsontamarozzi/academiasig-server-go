@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"AcademiaSIG-API/services"
 )
 
@@ -30,8 +29,7 @@ func GetCategorias(w http.ResponseWriter, r *http.Request) {
 */
 func GetCategoria(w http.ResponseWriter, r *http.Request) {
 
-	vars 			:= mux.Vars(r)
-	categoriaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	categoriaId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
 
 	categoria := services.GetCategoria(categoriaId)
 
@@ -47,7 +45,7 @@ func GetCategoria(w http.ResponseWriter, r *http.Request) {
 func GetCategoriaPesquisa(w http.ResponseWriter, r *http.Request) {
 
 	categoriaId, _ 		:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	categoriaGrupoId	:= r.FormValue("categoriaGrupoId")
+	categoriaGrupoId, _	:= strconv.ParseInt(r.FormValue("categoriaGrupoId"), 0, 64)
 	nome 				:= r.FormValue("nome")
 	tipo 				:= r.FormValue("tipo")
 

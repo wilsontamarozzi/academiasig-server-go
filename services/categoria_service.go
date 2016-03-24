@@ -4,31 +4,31 @@ import (
 	"AcademiaSIG-API/services/models"
 )
 
-func GetCategorias() models.Categorias {
+func GetCategorias() models.CategoriaLancamento {
 
-	var categorias models.Categorias
+	var categorias models.CategoriaLancamento
 
 	Con.Find(&categorias)
 
     return categorias
 }
 
-func GetCategoria(categoriaId int64) models.Categoria {
+func GetCategoria(categoriaId int64) models.CategoriaLancamento {
 
-	var categoria models.Categoria
+	var categoria models.CategoriaLancamento
 
 	Con.First(&categoria, categoriaId)
 
 	return categoria
 }
 
-func GetCategoriaPesquisa(categoriaId int64, categoriaGrupoId int64, nome string, tipo string) models.Categorias {
+func GetCategoriaPesquisa(categoriaId int64, categoriaGrupoId int64, nome string, tipo string) models.CategoriaLancamento {
 
 	if nome != "" {
 		nome = "%" + nome + "%"
 	}
 
-	var categorias models.Categorias
+	var categorias models.CategoriaLancamento
 
 	Con.Where("categoria_id = ?", categoriaId).
 			Or("categoria_grupo_id = ?", categoriaGrupoId).
@@ -39,7 +39,7 @@ func GetCategoriaPesquisa(categoriaId int64, categoriaGrupoId int64, nome string
 	return categorias
 }
 
-func SaveCategoria(categoriaGrupoId int64, nome string) models.Categoria {
+func SaveCategoria(categoriaGrupoId int64, nome string) models.CategoriaLancamento {
 
 	var grupoCategoria models.CategoriaLancamentoGrupo
 

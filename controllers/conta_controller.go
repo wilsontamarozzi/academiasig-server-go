@@ -30,7 +30,7 @@ func GetContas(w http.ResponseWriter, r *http.Request) {
 */
 func GetConta(w http.ResponseWriter, r *http.Request) {
 
-	vars 	:= mux.Vars(r)
+	vars 		:= mux.Vars(r)
 	contaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
 
 	conta := services.GetConta(contaId)	
