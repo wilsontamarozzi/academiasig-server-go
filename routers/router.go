@@ -2,8 +2,14 @@ package routers
 
 import (
 	"net/http"
-	"github.com/gorilla/mux"
+
+    _ "goji.io"
+    "github.com/gorilla/mux"
+    _ "github.com/goji/httpauth"
+    _ "AcademiaSIG-API/security"
 )
+
+//const PathPrefix = "/v1"
 
 type Route struct {
     Name        string
@@ -15,16 +21,21 @@ type Route struct {
 type Routes []Route
 
 func InitRoutes() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	router = router.PathPrefix("/v1/").Subrouter()
 
-	router = AddRoutesBanco(router)
+    //Cria rota Principal
+    router := mux.NewRouter().StrictSlash(true)
+
+    //Adiciona o Prefixo da versão da API (v1)
+    router = router.PathPrefix("/v1/").Subrouter()
+
+    //Adiciona as Sub rotas na rota Principal
+    router = AddRoutesBanco(router)
 	router = AddRoutesPessoa(router)
     router = AddRoutesPessoaFisica(router)
     router = AddRoutesCategoria(router)
     router = AddRoutesCategoriaGrupo(router)
     router = AddRoutesCidade(router)
     router = AddRoutesConta(router)
-	
+
 	return router
 }

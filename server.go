@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/goji/httpauth"
+	"AcademiaSIG-API/security"
 	"AcademiaSIG-API/routers"
 )
 
@@ -12,6 +13,11 @@ func main() {
 	//Inicia todas as rotas
 	router := routers.InitRoutes()
 
-	fmt.Println("Server Iniciado -p 8080")
-    log.Fatal(http.ListenAndServe(":8080", router))
+	//Habilita autenticação
+	http.Handle("/", httpauth.BasicAuth(security.GetAuthOpts())(router))
+
+	//Printa a Inicialização
+	log.Printf("Server Iniciado -p 8080")
+	//Inicia o Server
+    log.Fatal(http.ListenAndServe(":8080", nil))
 }

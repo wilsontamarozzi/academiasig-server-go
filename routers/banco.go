@@ -1,11 +1,26 @@
 package routers
 
 import (
+    _ "goji.io"
+    _ "goji.io/pat"
     "github.com/gorilla/mux"
     "AcademiaSIG-API/controllers"
 )
 
 func AddRoutesBanco(r *mux.Router) *mux.Router {
+
+    /*
+    subRouter := goji.SubMux()
+    r.HandleC(pat.New(PathPrefix + "/bancos/*"), subRouter)
+
+    for _, route := range routesBanco {
+        if route.Method == "GET" {
+            subRouter.HandleFunc(pat.Get(route.Pattern), route.HandlerFunc)
+        } else {
+            subRouter.HandleFunc(pat.Post(route.Pattern), route.HandlerFunc)
+        }
+    }
+    */
 
     subRouter := r.PathPrefix("/bancos").Subrouter()
 
