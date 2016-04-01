@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
     "encoding/hex"
 	
-	"AcademiaSIG-API/services"
+	"academiasig-api/services"
 	"github.com/goji/httpauth"
 )
 

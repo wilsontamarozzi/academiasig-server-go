@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
-	"AcademiaSIG-API/database"
+	"academiasig-api/database"
 )
 
 var Con *gorm.DB

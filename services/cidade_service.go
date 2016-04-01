@@ -1,7 +1,7 @@
 package services
 
 import (
-	"AcademiaSIG-API/services/models"
+	"academiasig-api/services/models"
 )
 
 func GetCidades() models.Cidades {

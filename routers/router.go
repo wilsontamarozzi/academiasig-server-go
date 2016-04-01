@@ -6,7 +6,7 @@ import (
     _ "goji.io"
     "github.com/gorilla/mux"
     _ "github.com/goji/httpauth"
-    _ "AcademiaSIG-API/security"
+    _ "academiasig-api/security"
 )
 
 //const PathPrefix = "/v1"

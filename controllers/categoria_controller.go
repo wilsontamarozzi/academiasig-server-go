@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"AcademiaSIG-API/services"
+	"academiasig-api/services"
 )
 
 /*	@autor: Wilson T.J.

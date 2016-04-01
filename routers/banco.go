@@ -4,7 +4,7 @@ import (
     _ "goji.io"
     _ "goji.io/pat"
     "github.com/gorilla/mux"
-    "AcademiaSIG-API/controllers"
+    "academiasig-api/controllers"
 )
 
 func AddRoutesBanco(r *mux.Router) *mux.Router {

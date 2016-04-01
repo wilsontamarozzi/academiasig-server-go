@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"AcademiaSIG-API/services"
+	"academiasig-api/services"
 )
 
 /*	@autor: Wilson T.J.

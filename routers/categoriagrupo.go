@@ -2,7 +2,7 @@ package routers
 
 import (
     "github.com/gorilla/mux"
-    "AcademiaSIG-API/controllers"
+    "academiasig-api/controllers"
 )
 
 func AddRoutesCategoriaGrupo(r *mux.Router) *mux.Router {

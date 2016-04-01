@@ -3,10 +3,11 @@ package main
 import (
 	"log"
 	"net/http"
+	_ "os"
 
 	"github.com/goji/httpauth"
-	"AcademiaSIG-API/security"
-	"AcademiaSIG-API/routers"
+	"academiasig-api/security"
+	"academiasig-api/routers"
 )
 
 func main() {
