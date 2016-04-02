@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	_ "os"
+	"os"
 
 	"github.com/goji/httpauth"
 	"academiasig-api/security"
@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
 	//Inicia todas as rotas
 	router := routers.InitRoutes()
 
@@ -20,5 +22,5 @@ func main() {
 	//Printa a Inicialização
 	log.Printf("Server Iniciado -p 8080")
 	//Inicia o Server
-    log.Fatal(http.ListenAndServe(":8080", nil))
+    log.Fatal(http.ListenAndServe(":" + port, nil))
 }
