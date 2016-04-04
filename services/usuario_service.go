@@ -4,16 +4,17 @@ import (
 	"academiasig-api/services/models"
 )
 
-func AuthenticationUser(user string, password string) bool {
+func AuthenticationUser(user string, password string) models.Pessoas {
 
-	var usuario models.Usuario
-	var count int
+	var pessoas models.Pessoas
 
-	Con.Model(&usuario).Where("login = ? AND senha = ?", user, password).Count(&count)
+	Con.Preload("PessoaFisica").
+		Preload("PessoaFisica.Usuario").
+		Preload("PessoaJuridica").
+		Joins("JOIN pessoa_fisica ON pessoa_fisica.pessoa_id = pessoa.pessoa_id").
+		Joins("JOIN usuario ON usuario.pessoa_fisica_id = pessoa_fisica.pessoa_fisica_id").
+		Where("usuario.login = ? AND usuario.senha = ?", user, password).
+		Find(&pessoas)
 
-	if count == 1 {
-		return true
-	} else {
-		return false
-	}
+	return pessoas
 }

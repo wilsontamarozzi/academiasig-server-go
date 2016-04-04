@@ -17,7 +17,11 @@ func GetAuthOpts() httpauth.AuthOptions {
 }
 
 func AuthenticationUser(user string, password string) bool {
-    return services.AuthenticationUser(user, GetMD5Hash(password))
+    if len(services.AuthenticationUser(user, password)) == 1 {
+        return true
+    } 
+
+    return false
 }
 
 func GetMD5Hash(text string) string {
