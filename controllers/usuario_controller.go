@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"encoding/json"
 
@@ -18,6 +19,9 @@ func AuthenticationUser(w http.ResponseWriter, r *http.Request) {
 	login := r.FormValue("login")
 	senha := r.FormValue("senha")
 	
+	fmt.Println(login)
+	fmt.Println(senha)
+
 	pessoas := services.AuthenticationUser(login, senha)
 
 	json.NewEncoder(w).Encode(pessoas)
