@@ -5,6 +5,7 @@ import (
     "encoding/hex"
 	
 	"academiasig-api/services"
+    "academiasig-api/services/models"
 	"github.com/goji/httpauth"
 )
 
@@ -17,7 +18,7 @@ func GetAuthOpts() httpauth.AuthOptions {
 }
 
 func AuthenticationUser(user string, password string) bool {
-    if len(services.AuthenticationUser(user, password)) == 1 {
+    if services.AuthenticationUser(user, password) != (models.Pessoa{}) {
         return true
     } 
 
