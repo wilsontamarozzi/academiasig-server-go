@@ -33,10 +33,4 @@ var routesPessoa = Routes{
         "/{id:[0-9]+}.json",
         controllers.GetPessoa,
     },
-    Route{
-        "getPessoaPesquisa",
-        "GET",
-        "/pesquisa.json",
-        controllers.GetPessoaPesquisa,
-    },
 }

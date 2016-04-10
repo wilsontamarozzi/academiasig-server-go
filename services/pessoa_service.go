@@ -4,13 +4,24 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetPessoas() models.Pessoas {
+func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPessoa string) models.Pessoas {
+
+	pessoaIdQuery 		:= (map[bool]string{true: "pessoa_id = '" 	+ pessoaId + 	"'", false: ""})	[pessoaId != ""]
+	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"'", false: ""})	[ativo != ""]
+	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%'", false: ""})	[nome != ""]
+	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%'", false: ""})	[email != ""]
+	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"'", false: ""})	[tipoPessoa != ""]
 
 	var pessoas models.Pessoas
 
 	Con.Preload("PessoaFisica").
 		Preload("PessoaFisica.Usuario").
 		Preload("PessoaJuridica").
+		Where(pessoaIdQuery).
+			Or(ativoQuery).
+			Or(nomeQuery).
+			Or(emailQuery).
+			Or(tipoPessoaQuery).
 		Find(&pessoas)
 
     return pessoas

@@ -17,7 +17,13 @@ import (
 */
 func GetPessoas(w http.ResponseWriter, r *http.Request) {
 	
-	pessoas := services.GetPessoas()
+	pessoaId	:= r.FormValue("id")
+	ativo		:= r.FormValue("ativo")
+	nome 		:= r.FormValue("nome")	
+	email 		:= r.FormValue("email")
+	tipoPessoa 	:= r.FormValue("tipo_pessoa")
+
+	pessoas := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa)
 
 	json.NewEncoder(w).Encode(pessoas)
 }
@@ -36,23 +42,4 @@ func GetPessoa(w http.ResponseWriter, r *http.Request) {
 	pessoa := services.GetPessoa(pessoaId)
 
 	json.NewEncoder(w).Encode(pessoa)
-}
-
-/*	@autor: Wilson T.J.
-
-	Método responsável por buscar uma Pessoa pelo parametros da queryString
-
-	Rota: /pessoas/pesquisa.json?id=ID&nome=NOME
-*/
-func GetPessoaPesquisa(w http.ResponseWriter, r *http.Request) {
-
-	pessoaId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	nome 			:= r.FormValue("nome")
-	ativo, _		:= strconv.ParseBool(r.FormValue("ativo"))
-	email 			:= r.FormValue("email")
-	tipoPessoa 		:= r.FormValue("tipoPessoa")
-
-	pessoas := services.GetPessoaPesquisa(pessoaId, nome, ativo, email, tipoPessoa)
-
-	json.NewEncoder(w).Encode(pessoas)
 }
