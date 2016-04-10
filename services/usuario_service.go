@@ -4,9 +4,9 @@ import (
 	"academiasig-api/services/models"
 )
 
-func AuthenticationUser(user string, password string) models.Pessoas {
+func AuthenticationUser(user string, password string) models.Pessoa {
 
-	var pessoas models.Pessoas
+	var pessoa models.Pessoa
 
 	Con.Preload("PessoaFisica").
 		Preload("PessoaFisica.Usuario").
@@ -14,7 +14,7 @@ func AuthenticationUser(user string, password string) models.Pessoas {
 		Joins("JOIN pessoa_fisica ON pessoa_fisica.pessoa_id = pessoa.pessoa_id").
 		Joins("JOIN usuario ON usuario.pessoa_fisica_id = pessoa_fisica.pessoa_fisica_id").
 		Where("usuario.login = ? AND usuario.senha = ?", user, password).
-		Find(&pessoas)
+		First(&pessoa)
 
-	return pessoas
+	return pessoa
 }

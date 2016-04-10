@@ -36,6 +36,7 @@ func InitRoutes() *mux.Router {
     router = AddRoutesCategoriaGrupo(router)
     router = AddRoutesCidade(router)
     router = AddRoutesConta(router)
+    router = AddRoutesUsuario(router)
 
 	return router
 }

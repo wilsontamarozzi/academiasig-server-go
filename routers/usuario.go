@@ -24,7 +24,7 @@ var routesUsuario = Routes{
     Route{
         "auth",
         "POST",
-        "/auth.json",
+        "/auth",
         controllers.AuthenticationUser,
     },
 }
