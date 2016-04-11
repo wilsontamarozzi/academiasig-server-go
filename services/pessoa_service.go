@@ -13,7 +13,9 @@ func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPe
 	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"' AND ", false: ""})	[tipoPessoa != ""]	
 
 	commit := pessoaIdQuery + ativoQuery + nomeQuery + emailQuery + tipoPessoaQuery
-	commit = commit[:len(commit)-4]
+	if commit != "" {
+		commit = commit[:len(commit)-4]
+	}
 
 	var pessoas models.Pessoas
 
