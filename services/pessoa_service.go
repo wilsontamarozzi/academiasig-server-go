@@ -6,22 +6,21 @@ import (
 
 func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPessoa string) models.Pessoas {
 
-	pessoaIdQuery 		:= (map[bool]string{true: "pessoa_id = '" 	+ pessoaId + 	"'", false: ""})	[pessoaId != ""]
-	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"'", false: ""})	[ativo != ""]
-	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%'", false: ""})	[nome != ""]
-	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%'", false: ""})	[email != ""]
-	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"'", false: ""})	[tipoPessoa != ""]
+	pessoaIdQuery 		:= (map[bool]string{true: "pessoa_id = '" 	+ pessoaId + 	"' AND ", false: ""})	[pessoaId != ""]
+	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"' AND ", false: ""})	[ativo != ""]
+	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%' AND ", false: ""})	[nome != ""]
+	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%' AND ", false: ""})	[email != ""]
+	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"' AND ", false: ""})	[tipoPessoa != ""]	
+
+	commit := pessoaIdQuery + ativoQuery + nomeQuery + emailQuery + tipoPessoaQuery
+	commit = commit[:len(commit)-4]
 
 	var pessoas models.Pessoas
 
 	Con.Preload("PessoaFisica").
 		Preload("PessoaFisica.Usuario").
 		Preload("PessoaJuridica").
-		Where(pessoaIdQuery).
-			Or(ativoQuery).
-			Or(nomeQuery).
-			Or(emailQuery).
-			Or(tipoPessoaQuery).
+		Where(commit).
 		Find(&pessoas)
 
     return pessoas
@@ -37,25 +36,4 @@ func GetPessoa(pessoaId int64) models.Pessoa {
 		First(&pessoa, pessoaId)
 
 	return pessoa
-}
-
-func GetPessoaPesquisa(pessoaId int64, nome string, ativo bool, email string, tipoPessoa string) models.Pessoas {
-
-	if nome != "" {
-		nome = "%" + nome + "%"
-	}
-
-	var pessoas models.Pessoas
-
-	Con.Preload("PessoaFisica").
-		Preload("PessoaFisica.Usuario").
-		Preload("PessoaJuridica").
-		Where("pessoa_id = ?", pessoaId).
-			Or("nome LIKE ?", nome).
-			//Or("ativo = ?", ativo).
-			Or("email = ?", email).
-			Or("tipo_pessoa = ?", tipoPessoa).
-		Find(&pessoas)
-
-	return pessoas
 }
