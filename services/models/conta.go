@@ -1,7 +1,7 @@
 package models
 
 type Conta struct {
-	ContaId 			int64		`gorm:"primary_key;" sql:"AUTO_INCREMENT"`
+	Id 					int64		`gorm:"primary_key;" sql:"AUTO_INCREMENT"`
 	BancoId				int64 
 	TitularId			int64 
 	OperadoraId			int64

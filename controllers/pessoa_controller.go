@@ -1,45 +1,131 @@
 package controllers
 
 import (
-	"net/http"
-	"encoding/json"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
+	"academiasig-api/services/models"
 )
 
 /*	@autor: Wilson T.J.
 
 	Método responsável por buscar todas as Pessoas
 
-	Rota: /pessoas.json
+	Method: GET
+	Rota: /pessoas
 */
-func GetPessoas(w http.ResponseWriter, r *http.Request) {
+func GetPessoas(c *gin.Context) {
 	
-	pessoaId	:= r.FormValue("id")
-	ativo		:= r.FormValue("ativo")
-	nome 		:= r.FormValue("nome")	
-	email 		:= r.FormValue("email")
-	tipoPessoa 	:= r.FormValue("tipo_pessoa")
+	pessoaId	:= c.Query("id")
+	ativo		:= c.Query("ativo")
+	nome 		:= c.Query("nome")	
+	email 		:= c.Query("email")
+	tipoPessoa 	:= c.Query("tipo_pessoa")
 
-	pessoas := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa)
+	content := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa)
 
-	json.NewEncoder(w).Encode(pessoas)
+	if len(content) <= 0 {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}
 }
 
 /*	@autor: Wilson T.J.
 
 	Método responsável por buscar uma Pessoa especifica pelo ID
 
-	Rota: /pessoas/{id:[0-9]+}.json
+	Method: GET
+	Rota: /pessoas/{id:[0-9]+}
 */
-func GetPessoa(w http.ResponseWriter, r *http.Request) {
+func GetPessoa(c *gin.Context) {
 
-	vars 			:= mux.Vars(r)
-	pessoaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+
+	content := services.GetPessoa(pessoaId)
+
+	if content == (models.Pessoa{}) {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}	
+}
+
+/*	@autor: Wilson T.J.
+
+	Método responsável por deletar uma Pessoa especifica pelo ID
+
+	Method: DELETE
+	Rota: /pessoas/{id:[0-9]+}
+*/
+func DeletePessoa(c *gin.Context) {
+
+	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 
 	pessoa := services.GetPessoa(pessoaId)
 
-	json.NewEncoder(w).Encode(pessoa)
+	if pessoa == (models.Pessoa{}) {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+	} else {
+		err := services.DeletePessoa(pessoaId)
+
+		if err == nil {
+			c.JSON(204, gin.H{"Status": "204", "Message": "Registro excluido com sucesso."})
+		} else {
+			c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
+}
+
+/*	@autor: Wilson T.J.
+
+	Método responsável por cadastrar uma Pessoa
+
+	Method: POST
+	Rota: /pessoas
+*/
+func CreatePessoa(c *gin.Context) {
+
+	var pessoa models.Pessoa
+	c.Bind(&pessoa)
+
+	err := services.CreatePessoa(pessoa)
+
+	if err == nil {
+		c.JSON(201, gin.H{"Status": "201", "Message": "Pessoa cadastrada com sucesso."})
+	} else {
+		c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+	}
+	}
+
+/*	@autor: Wilson T.J.
+
+	Método responsável por alterar uma Pessoa
+
+	Method: PUT
+	Rota: /pessoas/{id:[0-9]+}
+*/
+func UpdatePessoa(c *gin.Context) {
+
+	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	
+	err := services.GetPessoa(pessoaId)
+
+	if err == (models.Pessoa{}) {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+	} else {
+
+		var pessoa models.Pessoa
+		c.Bind(&pessoa)
+
+		err := services.UpdatePessoa(pessoa)
+
+		if err == nil {
+			c.JSON(201, pessoa)
+			//gin.H{"Status": "201", "Message": "Pessoa alterada com sucesso."}
+		} else {
+			c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
 }

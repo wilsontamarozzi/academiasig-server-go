@@ -1,7 +1,7 @@
 package models
 
 type Usuario struct {
-	UsuarioId 		int64		`gorm:"primary_key; AUTO_INCREMENT"`
+	Id 				uint64	`gorm:"primary_key; AUTO_INCREMENT"`
 	PessoaFisicaId 	int64
 	Ativo			bool
 	Login			string

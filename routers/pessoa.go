@@ -1,36 +1,17 @@
 package routers
 
 import (
-    "github.com/gorilla/mux"
+    "github.com/gin-gonic/gin"
     "academiasig-api/controllers"
 )
 
-func AddRoutesPessoa(r *mux.Router) *mux.Router {
+func AddRoutesPessoa(r *gin.RouterGroup) *gin.RouterGroup {
 
-    subRouter := r.PathPrefix("/pessoas").Subrouter()
-
-    for _, route := range routesPessoa {
-        subRouter.
-            Methods(route.Method).
-            Path(route.Pattern).
-            Name(route.Name).
-            Handler(route.HandlerFunc)
-    }
+    r.GET("/pessoas", controllers.GetPessoas)
+    r.GET("/pessoas/:id", controllers.GetPessoa)
+    r.DELETE("/pessoas/:id", controllers.DeletePessoa)
+    r.POST("/pessoas", controllers.CreatePessoa)
+    r.PUT("/pessoas/:id", controllers.UpdatePessoa)
 
     return r
-}
-
-var routesPessoa = Routes{
-    Route{
-        "getPessoas",
-        "GET",
-        "/lista.json",
-        controllers.GetPessoas,
-    },
-    Route{
-        "getPessoa",
-        "GET",
-        "/{id:[0-9]+}.json",
-        controllers.GetPessoa,
-    },
 }

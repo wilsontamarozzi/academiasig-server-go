@@ -5,7 +5,7 @@ import (
 )
 
 type Pessoa struct {
-	PessoaId 		int64				`gorm:"primary_key; AUTO_INCREMENT"`
+	Id 				int64				`gorm:"primary_key; AUTO_INCREMENT"`
 	AdmCadastroId	int64
 	DataCadastro	time.Time
 	Ativo			bool
@@ -20,8 +20,8 @@ type Pessoa struct {
 	Logradouro		string 
 	Numero			string 
 	CidadeId		int64
-	PessoaFisica	*PessoaFisica 		`gorm:"foreignkey:pessoa_id; associationforeignkey:pessoa_id"`
-	PessoaJuridica	*PessoaJuridica		`gorm:"foreignkey:pessoa_id; associationforeignkey:pessoa_id"`
+	PessoaFisica	*PessoaFisica		`gorm:"ForeignKey:pessoa_id;AssociationForeignKey:id"`
+	PessoaJuridica	*PessoaJuridica		`gorm:"ForeignKey:pessoa_id;AssociationForeignKey:id"`
 }
 
 type Pessoas []Pessoa

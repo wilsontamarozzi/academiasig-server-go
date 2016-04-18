@@ -3,13 +3,8 @@ package routers
 import (
 	"net/http"
 
-    _ "goji.io"
-    "github.com/gorilla/mux"
-    _ "github.com/goji/httpauth"
-    _ "academiasig-api/security"
+    "github.com/gin-gonic/gin"
 )
-
-//const PathPrefix = "/v1"
 
 type Route struct {
     Name        string
@@ -20,23 +15,13 @@ type Route struct {
 
 type Routes []Route
 
-func InitRoutes() *mux.Router {
+func InitRoutes() *gin.Engine {
 
-    //Cria rota Principal
-    router := mux.NewRouter().StrictSlash(true)
+    r := gin.Default()
 
-    //Adiciona o Prefixo da versão da API (v1)
-    router = router.PathPrefix("/v1/").Subrouter()
+    v1 := r.Group("api/v1")
+    v1 = AddRoutesPessoa(v1)
+    v1 = AddRoutesUsuario(v1)
 
-    //Adiciona as Sub rotas na rota Principal
-    router = AddRoutesBanco(router)
-	router = AddRoutesPessoa(router)
-    router = AddRoutesPessoaFisica(router)
-    router = AddRoutesCategoria(router)
-    router = AddRoutesCategoriaGrupo(router)
-    router = AddRoutesCidade(router)
-    router = AddRoutesConta(router)
-    router = AddRoutesUsuario(router)
-
-	return router
+	return r
 }

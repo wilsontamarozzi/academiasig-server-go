@@ -5,7 +5,7 @@ import (
 )
 
 type PessoaFisica struct {
-	PessoaFisicaId 		int64		`gorm:"primary_key; AUTO_INCREMENT"`
+	PessoaFisicaId 		uint64 		`gorm:"primary_key; AUTO_INCREMENT"`
 	PessoaId 			int64
 	Sexo				bool
 	DataNascimento		time.Time
@@ -15,7 +15,7 @@ type PessoaFisica struct {
 	TelefoneCelular		string
 	TelefoneEmpresa		string
 	UsuarioSistema		bool
-	Usuario				*Usuario 	`gorm:"foreignkey:pessoa_fisica_id; associationforeignkey:pessoa_fisica_id"`
+	Usuario				*Usuario 	`gorm:"ForeignKey:pessoa_fisica_id;AssociationForeignKey:pessoa_fisica_id"`
 }
 
 type PessoasFisica []PessoaFisica

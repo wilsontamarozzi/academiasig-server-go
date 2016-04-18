@@ -1,30 +1,13 @@
 package routers
 
 import (
-    "github.com/gorilla/mux"
+    "github.com/gin-gonic/gin"
     "academiasig-api/controllers"
 )
 
-func AddRoutesUsuario(r *mux.Router) *mux.Router {
+func AddRoutesUsuario(r *gin.RouterGroup) *gin.RouterGroup {
 
-    subRouter := r.PathPrefix("/usuarios").Subrouter()
-
-    for _, route := range routesUsuario {
-        subRouter.
-            Methods(route.Method).
-            Path(route.Pattern).
-            Name(route.Name).
-            Handler(route.HandlerFunc)
-    }
-
+    r.POST("/usuarios/auth", controllers.AuthenticationUser)
+    
     return r
-}
-
-var routesUsuario = Routes{
-    Route{
-        "auth",
-        "POST",
-        "/auth",
-        controllers.AuthenticationUser,
-    },
 }

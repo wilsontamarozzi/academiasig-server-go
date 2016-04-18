@@ -1,11 +1,9 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-	"encoding/json"
-
+	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
+	"academiasig-api/services/models"
 )
 
 /*	@autor: Wilson T.J.
@@ -14,15 +12,12 @@ import (
 
 	Rota: /usuarios.json
 */
-func AuthenticationUser(w http.ResponseWriter, r *http.Request) {
+func AuthenticationUser(c *gin.Context) {
 
-	login := r.FormValue("login")
-	senha := r.FormValue("senha")
-	
-	fmt.Println(login)
-	fmt.Println(senha)
+	var usuario models.Usuario
+	c.Bind(&usuario)
 
-	pessoas := services.AuthenticationUser(login, senha)
+	content := services.AuthenticationUser(usuario.Login, usuario.Senha)
 
-	json.NewEncoder(w).Encode(pessoas)
+	c.JSON(200, content)
 }
