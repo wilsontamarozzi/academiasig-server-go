@@ -19,9 +19,7 @@ func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPe
 
 	var pessoas models.Pessoas
 
-	Con.Preload("PessoaFisica").
-		Preload("PessoaFisica.Usuario").
-		Preload("PessoaJuridica").
+	Con.Preload("Usuario").
 		Where(commit).
 		Find(&pessoas)
 
@@ -32,9 +30,7 @@ func GetPessoa(pessoaId int64) models.Pessoa {
 
 	var pessoa models.Pessoa
 
-	Con.Preload("PessoaFisica").
-		Preload("PessoaFisica.Usuario").
-		Preload("PessoaJuridica").
+	Con.Preload("Usuario").
 		First(&pessoa, pessoaId)
 
 	return pessoa
