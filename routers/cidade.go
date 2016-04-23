@@ -1,42 +1,13 @@
 package routers
 
 import (
-    "github.com/gorilla/mux"
+    "github.com/gin-gonic/gin"
     "academiasig-api/controllers"
 )
 
-func AddRoutesCidade(r *mux.Router) *mux.Router {
+func AddRoutesCidade(r *gin.RouterGroup) *gin.RouterGroup {
 
-    subRouter := r.PathPrefix("/cidades").Subrouter()
-
-    for _, route := range routesCidade {
-        subRouter.
-            Methods(route.Method).
-            Path(route.Pattern).
-            Name(route.Name).
-            Handler(route.HandlerFunc)
-    }
+    r.GET("/cidades", controllers.GetCidades)
 
     return r
-}
-
-var routesCidade = Routes{
-    Route{
-        "getCidades",
-        "GET",
-        "/lista.json",
-        controllers.GetCidades,
-    },
-    Route{
-        "getCidade",
-        "GET",
-        "/{id:[0-9]+}.json",
-        controllers.GetCidade,
-    },
-    Route{
-        "getCidadePesquisa",
-        "GET",
-        "/pesquisa.json",
-        controllers.GetCidadePesquisa,
-    },
 }

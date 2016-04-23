@@ -1,10 +1,11 @@
 package models
 
 type Cidade struct {
-	Id			int64	`gorm:"primary_key:true;" sql:"AUTO_INCREMENT"`
-	EstadoId	int64
-	Nome		string
-	Estado 		Estado 	`gorm:"ForeignKey:EstadoId; AssociationForeignKey:EstadoId"`
+	CidadeCodigo		int64	`gorm:"primary_key:true;" sql:"AUTO_INCREMENT"`
+	UfCodigo			int64
+	CidadeDescricao		string
+	CidadeCep 			string
+	Estado 				Estado 	`gorm:"foreignkey:uf_codigo;associationforeignkey:uf_codigo"`
 }
 
 type Cidades []Cidade

@@ -7,6 +7,7 @@ import (
 type Pessoa struct {
 	Id 					int64				`gorm:"primary_key; AUTO_INCREMENT"`
 	AdmCadastroId		int64
+	LogradouroId 		int64
 	//DataCadastro		time.Time
 	Ativo				bool
 	Email				string 
@@ -14,13 +15,9 @@ type Pessoa struct {
 	Observacao			string 
 	TipoPessoa			string
 	Suporte				string 
-	Bairro				string
-	Cep					string 
 	Complemento			string
-	Logradouro			string 
-	Numero				string 
-	CidadeId			int64
-	Sexo				bool
+	Numero				string
+	Sexo				*bool
 	//DataNascimento		time.Time
 	Cpf 				string
 	Rg					string
@@ -37,6 +34,32 @@ type Pessoa struct {
 	InscricaoEstadual	string
 	InscricaoMunicipal	string
 	Usuario				*Usuario 		`gorm:"ForeignKey:pessoa_id;AssociationForeignKey:id"`
+	Logradouro 			Logradouro 		`gorm:"ForeignKey:endereco_codigo;AssociationForeignKey:logradouro_id"`
 }
 
 type Pessoas []Pessoa
+
+func (p Pessoa) IsValid() map[string][]string {
+
+	err := make(map[string][]string)
+
+	if p.Nome == "" {
+		err["nome"] = append(err["nome"], "Nome não pode estar vázio.")
+	}
+
+	if len(p.Nome) < 2 {
+		err["nome"] = append(err["nome"], "Nome deve ter mais de 2 caracteres.")
+	}
+
+	if p.TipoPessoa == "" {
+		err["tipoPessoa"] = append(err["tipoPessoa"], "Tipo de Pessoa não definido.")
+	} else {
+		if p.TipoPessoa == "F" {
+			if p.Sexo == nil {
+				err["sexo"] = append(err["sexo"], "Sexo obrigatório.")
+			}			
+		}
+	}
+
+	return err
+}

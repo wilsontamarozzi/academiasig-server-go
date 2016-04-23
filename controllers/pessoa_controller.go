@@ -46,7 +46,7 @@ func GetPessoa(c *gin.Context) {
 	content := services.GetPessoa(pessoaId)
 
 	if content == (models.Pessoa{}) {
-		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
 		c.JSON(200, content)
 	}	
@@ -66,14 +66,14 @@ func DeletePessoa(c *gin.Context) {
 	pessoa := services.GetPessoa(pessoaId)
 
 	if pessoa == (models.Pessoa{}) {
-		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
 		err := services.DeletePessoa(pessoaId)
 
 		if err == nil {
 			c.JSON(204, gin.H{"Status": "204", "Message": "Registro excluido com sucesso."})
 		} else {
-			c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 		}
 	}
 }
@@ -90,14 +90,20 @@ func CreatePessoa(c *gin.Context) {
 	var pessoa models.Pessoa
 	c.Bind(&pessoa)
 
-	err := services.CreatePessoa(pessoa)
+	err := pessoa.IsValid()
 
-	if err == nil {
-		c.JSON(201, gin.H{"Status": "201", "Message": "Pessoa cadastrada com sucesso."})
+	if len(err) > 0 {
+		c.JSON(422, gin.H{"errors" : err})
 	} else {
-		c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+		pessoa = services.CreatePessoa(pessoa)
+		
+		if pessoa.Id > 0 {
+			c.JSON(201, pessoa)
+		} else {
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+		}
 	}
-	}
+}
 
 /*	@autor: Wilson T.J.
 
@@ -113,19 +119,23 @@ func UpdatePessoa(c *gin.Context) {
 	err := services.GetPessoa(pessoaId)
 
 	if err == (models.Pessoa{}) {
-		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
-
 		var pessoa models.Pessoa
 		c.Bind(&pessoa)
 
-		err := services.UpdatePessoa(pessoa)
+		err := pessoa.IsValid()
 
-		if err == nil {
-			c.JSON(201, pessoa)
-			//gin.H{"Status": "201", "Message": "Pessoa alterada com sucesso."}
+		if len(err) > 0 {
+			c.JSON(422, gin.H{"errors" : err})
 		} else {
-			c.JSON(500, gin.H{"Error": "500", "Message": "Houve um erro no servidor."})
+			err := services.UpdatePessoa(pessoa)
+
+			if err == nil {
+				c.JSON(201, pessoa)
+			} else {
+				c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+			}
 		}
 	}
 }

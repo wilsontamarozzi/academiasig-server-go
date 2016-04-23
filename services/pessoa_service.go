@@ -19,9 +19,15 @@ func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPe
 
 	var pessoas models.Pessoas
 
-	Con.Preload("Usuario").
-		Where(commit).
-		Find(&pessoas)
+	Con.Where(commit).Find(&pessoas)
+
+	/*
+	for i, _ := range pessoas {
+        Con.Preload("Logradouro.Bairro.Cidade.Estado").
+		Preload("Usuario").
+		First(&pessoas[i])
+    }
+    */
 
     return pessoas
 }
@@ -30,7 +36,8 @@ func GetPessoa(pessoaId int64) models.Pessoa {
 
 	var pessoa models.Pessoa
 
-	Con.Preload("Usuario").
+	Con.Preload("Logradouro.Bairro.Cidade.Estado").
+		Preload("Usuario").
 		First(&pessoa, pessoaId)
 
 	return pessoa
@@ -42,14 +49,18 @@ func DeletePessoa(pessoaId int64) error {
 	return err
 }
 
-func CreatePessoa(pessoa models.Pessoa) error {
-	err := Con.Set("gorm:save_associations", true).Create(&pessoa).Error
+func CreatePessoa(pessoa models.Pessoa) models.Pessoa {
+	err := Con.Set("gorm:save_associations", false).Create(&pessoa).Error
 
-	return err
+	if err != nil {
+		panic(err)
+	}
+
+	return pessoa
 }
 
 func UpdatePessoa(pessoa models.Pessoa) error {
-	err := Con.Save(&pessoa).Error
+	err := Con.Set("gorm:save_associations", false).Save(&pessoa).Error
 
 	return err
 }

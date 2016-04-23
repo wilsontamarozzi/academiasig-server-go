@@ -18,7 +18,7 @@ func GetConnection() *gorm.DB {
   //Faz com que o nome dos objetos fique no singular
   db.SingularTable(true)
   //Ativa log de todas as saidas da conexão (SQL)
-  db.LogMode(true)
+  //db.LogMode(true)
 
  	return db
 }

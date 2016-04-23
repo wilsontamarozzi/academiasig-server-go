@@ -10,14 +10,14 @@ import (
 
 /*	@autor: Wilson T.J.
 
-	Método responsável por buscar todas as Cidades
+	Método responsável por buscar todos os Logradouros
 
 	Method: GET
-	Rota: /cidades
+	Rota: /logradouros
 */
-func GetCidades(c *gin.Context) {
+func GetLogradouros(c *gin.Context) {
 
-	content := services.GetCidades()
+	content := services.GetLogradouros()
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
@@ -28,18 +28,18 @@ func GetCidades(c *gin.Context) {
 
 /*	@autor: Wilson T.J.
 
-	Método responsável por buscar um Cidade especifica pelo CEP
+	Método responsável por buscar um Logradouro especifica pelo CEP
 
 	Method: GET
-	Rota: /cidades/{id:[0-9]+}
+	Rota: /logradouros/{id:[0-9]+}
 */
-func GetCidade(c *gin.Context) {
+func GetLogradouro(c *gin.Context) {
 
-	cidadeCEP, _ := strconv.ParseInt(c.Params.ByName("cep"), 0, 64)
+	logradouroCEP, _ := strconv.ParseInt(c.Params.ByName("cep"), 0, 64)
 
-	content := services.GetCidade(cidadeCEP)
+	content := services.GetLogradouro(logradouroCEP)
 
-	if content == (models.Cidade{}) {
+	if content == (models.Logradouro{}) {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registro não encontrado."})
 	} else {
 		c.JSON(200, content)
