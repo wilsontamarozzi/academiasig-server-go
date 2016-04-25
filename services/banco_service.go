@@ -4,11 +4,19 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetBancos() models.Bancos {
+func GetBancos(nome string, numero string) models.Bancos {
+
+	nomeQuery := (map[bool]string{true: "nome LIKE '%" + nome + "%' AND ", false: ""}) [nome != ""]
+	numeroQuery := (map[bool]string{true: "numero LIKE '%" + numero + "%' AND ", false: ""}) [numero != ""]
+	
+	commit := nomeQuery + numeroQuery
+	if commit != "" {
+		commit = commit[:len(commit)-4]
+	}
 
 	var bancos models.Bancos
 
-	Con.Find(&bancos)
+	Con.Where(commit).Find(&bancos)
 
     return bancos
 }
@@ -22,18 +30,24 @@ func GetBanco(bancoId int64) models.Banco {
 	return banco
 }
 
-func GetBancoPesquisa(bancoId int64, nome string, numero string) models.Bancos {
+func DeleteBanco(bancoId int64) error {
+	err := Con.Where("id = ?", bancoId).Delete(&models.Banco{}).Error
 
-	if nome != "" {
-		nome = "%" + nome + "%"
+	return err
+}
+
+func CreateBanco(banco models.Banco) models.Banco {
+	err := Con.Create(&banco).Error
+
+	if err != nil {
+		panic(err)
 	}
 
-	var bancos models.Bancos
+	return banco
+}
 
-	Con.Where("banco_id = ?", bancoId).
-		Or("nome LIKE ?", nome).
-		Or("numero = ?", numero).
-		Find(&bancos)
+func UpdateBanco(banco models.Banco) error {
+	err := Con.Save(&banco).Error
 
-	return bancos
+	return err
 }

@@ -44,7 +44,7 @@ func (p Pessoa) IsValid() map[string][]string {
 	err := make(map[string][]string)
 
 	if p.Nome == "" {
-		err["nome"] = append(err["nome"], "Nome não pode estar vázio.")
+		err["nome"] = append(err["nome"], "Nome não pode ser vázio.")
 	}
 
 	if len(p.Nome) < 2 {

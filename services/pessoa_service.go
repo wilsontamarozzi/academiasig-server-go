@@ -4,15 +4,16 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPessoa string) models.Pessoas {
+func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPessoa string, usuarioSistema string) models.Pessoas {
 
-	pessoaIdQuery 		:= (map[bool]string{true: "id = '" 			+ pessoaId + 	"' AND ", false: ""})	[pessoaId != ""]
-	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"' AND ", false: ""})	[ativo != ""]
-	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%' AND ", false: ""})	[nome != ""]
-	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%' AND ", false: ""})	[email != ""]
-	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"' AND ", false: ""})	[tipoPessoa != ""]	
+	pessoaIdQuery 		:= (map[bool]string{true: "id = '" 			+ pessoaId + 	"' AND ", false: ""})			[pessoaId != ""]
+	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"' AND ", false: ""})			[ativo != ""]
+	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%' AND ", false: ""})			[nome != ""]
+	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%' AND ", false: ""})			[email != ""]
+	usuarioSistemaQuery	:= (map[bool]string{true: "usuario_sistema = '" + usuarioSistema + 	"' AND ", false: ""})	[usuarioSistema != ""]	
+	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"' AND ", false: ""})			[tipoPessoa != ""]	
 
-	commit := pessoaIdQuery + ativoQuery + nomeQuery + emailQuery + tipoPessoaQuery
+	commit := pessoaIdQuery + ativoQuery + nomeQuery + emailQuery + usuarioSistemaQuery + tipoPessoaQuery
 	if commit != "" {
 		commit = commit[:len(commit)-4]
 	}

@@ -17,13 +17,14 @@ import (
 */
 func GetPessoas(c *gin.Context) {
 	
-	pessoaId	:= c.Query("id")
-	ativo		:= c.Query("ativo")
-	nome 		:= c.Query("nome")	
-	email 		:= c.Query("email")
-	tipoPessoa 	:= c.Query("tipo_pessoa")
+	pessoaId		:= c.Query("id")
+	ativo			:= c.Query("ativo")
+	nome 			:= c.Query("nome")	
+	email 			:= c.Query("email")
+	tipoPessoa 		:= c.Query("tipo_pessoa")
+	usuarioSistema 	:= c.Query("usuario_sistema")
 
-	content := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa)
+	content := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa, usuarioSistema)
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
@@ -71,7 +72,7 @@ func DeletePessoa(c *gin.Context) {
 		err := services.DeletePessoa(pessoaId)
 
 		if err == nil {
-			c.JSON(204, gin.H{"Status": "204", "Message": "Registro excluido com sucesso."})
+			c.Writer.WriteHeader(204)
 		} else {
 			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 		}

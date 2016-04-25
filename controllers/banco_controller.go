@@ -1,56 +1,103 @@
 package controllers
 
 import (
-	"net/http"
-	"encoding/json"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
+	"academiasig-api/services/models"
 )
 
-/*	@autor: Wilson T.J.
+func GetBancos(c *gin.Context) {
+	
+	nome := c.Query("nome")
+	numero := c.Query("numero")
+	
+	content := services.GetBancos(nome, numero)
 
-	Método responsável por buscar todas as Bancos
-
-	Rota: /bancos.json
-*/
-func GetBancos(w http.ResponseWriter, r *http.Request) {
-
-	bancos := services.GetBancos()
-
-	json.NewEncoder(w).Encode(bancos)
+	if len(content) <= 0 {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}
 }
 
-/*	@autor: Wilson T.J.
+func GetBanco(c *gin.Context) {
 
-	Método responsável por buscar uma Banco especifica pelo ID
+	bancoId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 
-	Rota: /bancos/{id:[0-9]+}.json
-*/
-func GetBanco(w http.ResponseWriter, r *http.Request) {
+	content := services.GetBanco(bancoId)
 
-	vars 		:= mux.Vars(r)
-	bancoId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
+	if content == (models.Banco{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}	
+}
+
+func DeleteBanco(c *gin.Context) {
+
+	bancoId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 
 	banco := services.GetBanco(bancoId)
 
-	json.NewEncoder(w).Encode(banco)
+	if banco == (models.Banco{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		err := services.DeleteBanco(bancoId)
+
+		if err == nil {
+			c.Writer.WriteHeader(204)
+		} else {
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
 }
 
-/*	@autor: Wilson T.J.
+func CreateBanco(c *gin.Context) {
 
-	Método responsável por buscar uma Banco pelo parametros da queryString
+	var banco models.Banco
+	c.Bind(&banco)
 
-	Rota: /bancos/pesquisa.json?id=ID&nome=NOME
-*/
-func GetBancoPesquisa(w http.ResponseWriter, r *http.Request) {
+	err := banco.IsValid()
 
-	bancoId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	nome 		:= r.FormValue("nome")
-	numero 		:= r.FormValue("numero")
+	if len(err) > 0 {
+		c.JSON(422, gin.H{"errors" : err})
+	} else {
+		banco = services.CreateBanco(banco)
+		
+		if banco.Id > 0 {
+			c.JSON(201, banco)
+		} else {
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
+}
 
-	bancos := services.GetBancoPesquisa(bancoId, nome, numero)
+func UpdateBanco(c *gin.Context) {
 
-	json.NewEncoder(w).Encode(bancos)
+	bancoId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	
+	err := services.GetBanco(bancoId)
+
+	if err == (models.Banco{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		var banco models.Banco
+		c.Bind(&banco)
+
+		err := banco.IsValid()
+
+		if len(err) > 0 {
+			c.JSON(422, gin.H{"errors" : err})
+		} else {
+			err := services.UpdateBanco(banco)
+
+			if err == nil {
+				c.JSON(201, banco)
+			} else {
+				c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+			}
+		}
+	}
 }
