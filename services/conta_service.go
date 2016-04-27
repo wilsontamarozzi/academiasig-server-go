@@ -4,14 +4,20 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetContas() models.Contas {
+func GetContas(descricao string, tipoConta string, ativo string) models.Contas {
+
+	descricaoQuery 	:= (map[bool]string{true: "descricao LIKE '%" + descricao + "%' AND ", false: ""}) 	[descricao != ""]
+	tipoContaQuery 	:= (map[bool]string{true: "tipo_conta = '" + tipoConta + "' AND ", false: ""}) 		[tipoConta != ""]
+	situacaoQuery 	:= (map[bool]string{true: "ativo = '" + ativo + "' AND ", false: ""}) 				[ativo != ""]
+	
+	commit := descricaoQuery + tipoContaQuery + situacaoQuery
+	if commit != "" {
+		commit = commit[:len(commit)-4]
+	}
 
 	var contas models.Contas
 
-	Con.Preload("Banco").
-		Preload("Titular").
-		Preload("Operadora").
-		Find(&contas)
+	Con.Where(commit).Find(&contas)
 
     return contas
 }
@@ -28,20 +34,24 @@ func GetConta(contaId int64) models.Conta {
 	return conta
 }
 
-func GetContaPesquisa(contaId int64, descricao string) models.Contas {
+func DeleteConta(contaId int64) error {
+	err := Con.Where("id = ?", contaId).Delete(&models.Conta{}).Error
 
-	if descricao != "" {
-		descricao = "%" + descricao + "%"
+	return err
+}
+
+func CreateConta(conta models.Conta) models.Conta {
+	err := Con.Set("gorm:save_associations", false).Create(&conta).Error
+
+	if err != nil {
+		panic(err)
 	}
 
-	var contas models.Contas
+	return conta
+}
 
-	Con.Preload("Banco").
-		Preload("Titular").
-		Preload("Operadora").
-		Where("conta_id = ?", contaId).
-			Or("descricao LIKE ?", descricao).
-		Find(&contas)
+func UpdateConta(conta models.Conta) error {
+	err := Con.Set("gorm:save_associations", false).Save(&conta).Error
 
-	return contas
+	return err
 }

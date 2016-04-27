@@ -25,6 +25,7 @@ func InitRoutes() *gin.Engine {
     v1 = AddRoutesLogradouro(v1)
     v1 = AddRoutesCidade(v1)
     v1 = AddRoutesBanco(v1)
+    v1 = AddRoutesConta(v1)
 
 	return r
 }

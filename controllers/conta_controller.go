@@ -1,55 +1,104 @@
 package controllers
 
 import (
-	"net/http"
-	"encoding/json"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
+	"academiasig-api/services/models"
 )
 
-/*	@autor: Wilson T.J.
+func GetContas(c *gin.Context) {
+	
+	descricao 	:= c.Query("descricao")
+	tipoConta 	:= c.Query("tipo_conta")
+	ativo 		:= c.Query("ativo")
+	
+	content := services.GetContas(descricao, tipoConta, ativo)
 
-	Método responsável por buscar todas as Contas
-
-	Rota: /contas.json
-*/
-func GetContas(w http.ResponseWriter, r *http.Request) {
-
-	contas := services.GetContas()	
-
-	json.NewEncoder(w).Encode(contas)
+	if len(content) <= 0 {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}
 }
 
-/*	@autor: Wilson T.J.
+func GetConta(c *gin.Context) {
 
-	Método responsável por buscar uma Conta especifica pelo ID
+	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 
-	Rota: /contas/{id:[0-9]+}.json
-*/
-func GetConta(w http.ResponseWriter, r *http.Request) {
+	content := services.GetConta(contaId)
 
-	vars 		:= mux.Vars(r)
-	contaId, _ 	:= strconv.ParseInt(vars["id"], 0, 64)
-
-	conta := services.GetConta(contaId)	
-
-	json.NewEncoder(w).Encode(conta)
+	if content == (models.Conta{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}	
 }
 
-/*	@autor: Wilson T.J.
+func DeleteConta(c *gin.Context) {
 
-	Método responsável por buscar uma Conta pelo parametros da queryString
+	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 
-	Rota: /contas/pesquisa.json?id=ID&nome=NOME
-*/
-func GetContaPesquisa(w http.ResponseWriter, r *http.Request) {
+	conta := services.GetConta(contaId)
 
-	contaId, _ 	:= strconv.ParseInt(r.FormValue("id"), 0, 64)
-	descricao	:= r.FormValue("descricao")
+	if conta == (models.Conta{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		err := services.DeleteConta(contaId)
 
-	contas := services.GetContaPesquisa(contaId, descricao)
+		if err == nil {
+			c.Writer.WriteHeader(204)
+		} else {
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
+}
 
-	json.NewEncoder(w).Encode(contas)
+func CreateConta(c *gin.Context) {
+
+	var conta models.Conta
+	c.Bind(&conta)
+
+	err := conta.IsValid()
+
+	if len(err) > 0 {
+		c.JSON(422, gin.H{"errors" : err})
+	} else {
+		conta = services.CreateConta(conta)
+		
+		if conta.Id > 0 {
+			c.JSON(201, conta)
+		} else {
+			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+		}
+	}
+}
+
+func UpdateConta(c *gin.Context) {
+
+	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	
+	err := services.GetConta(contaId)
+
+	if err == (models.Conta{}) {
+		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
+	} else {
+		var conta models.Conta
+		c.Bind(&conta)
+
+		err := conta.IsValid()
+
+		if len(err) > 0 {
+			c.JSON(422, gin.H{"errors" : err})
+		} else {
+			err := services.UpdateConta(conta)
+
+			if err == nil {
+				c.JSON(201, conta)
+			} else {
+				c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
+			}
+		}
+	}
 }
