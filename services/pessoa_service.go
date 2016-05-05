@@ -6,31 +6,65 @@ import (
 
 func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPessoa string, usuarioSistema string) models.Pessoas {
 
-	pessoaIdQuery 		:= (map[bool]string{true: "id = '" 			+ pessoaId + 	"' AND ", false: ""})			[pessoaId != ""]
-	ativoQuery 			:= (map[bool]string{true: "ativo = 	'" 		+ ativo + 		"' AND ", false: ""})			[ativo != ""]
-	nomeQuery	 		:= (map[bool]string{true: "nome LIKE '%" 	+ nome + 		"%' AND ", false: ""})			[nome != ""]
-	emailQuery 			:= (map[bool]string{true: "email LIKE '%" 	+ email + 		"%' AND ", false: ""})			[email != ""]
-	usuarioSistemaQuery	:= (map[bool]string{true: "usuario_sistema = '" + usuarioSistema + 	"' AND ", false: ""})	[usuarioSistema != ""]	
-	tipoPessoaQuery 	:= (map[bool]string{true: "tipo_pessoa = '" + tipoPessoa + 	"' AND ", false: ""})			[tipoPessoa != ""]	
+	var pessoas models.Pessoas
 
-	commit := pessoaIdQuery + ativoQuery + nomeQuery + emailQuery + usuarioSistemaQuery + tipoPessoaQuery
-	if commit != "" {
-		commit = commit[:len(commit)-4]
+	db := Con
+
+	if pessoaId != "" {
+		db = db.Where("id = ?", pessoaId)
 	}
+
+	if ativo != "" {
+		db = db.Where("ativo = ?", ativo)
+	}
+
+	if nome != "" {
+		db = db.Where("nome LIKE ?", "%" + nome + "%")	
+	}
+
+	if email != "" {
+		db = db.Where("email LIKE ?", "%" + email + "%")
+	}
+
+	if usuarioSistema != "" {
+		db = db.Where("usuario_sistema = ?", usuarioSistema)
+	}
+
+	if tipoPessoa != "" {
+		db = db.Where("tipo_pessoa = ?", tipoPessoa)
+	}
+	
+	db.Find(&pessoas)
+
+    return pessoas
+}
+
+func GetPessoasByFullTextSearch(text string, tipoPessoa string, ativo string) models.Pessoas {
 
 	var pessoas models.Pessoas
 
-	Con.Where(commit).Find(&pessoas)
+	db := Con
 
-	/*
-	for i, _ := range pessoas {
-        Con.Preload("Logradouro.Bairro.Cidade.Estado").
-		Preload("Usuario").
-		First(&pessoas[i])
-    }
-    */
+	db = db.Table("pessoa").Select("*")
 
-    return pessoas
+	if tipoPessoa != "" {
+		db = db.Where("tipo_pessoa = ?", tipoPessoa)
+	}
+
+	if ativo != "" {
+		db = db.Where("ativo = ?", ativo)
+	}
+
+	db = db.Where(`MATCH(nome, observacao, suporte, complemento, 
+			cpf, rg, telefone_celular, telefone_empresa, 
+			telefone_residencial, cnpj, fax, 
+			inscricao_estadual, inscricao_municipal, 
+			razao_social, telefone_comercial, website) 
+		AGAINST(?)`, text)
+
+	db.Scan(&pessoas)
+
+	return pessoas
 }
 
 func GetPessoa(pessoaId int64) models.Pessoa {

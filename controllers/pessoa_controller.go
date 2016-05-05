@@ -23,8 +23,15 @@ func GetPessoas(c *gin.Context) {
 	email 			:= c.Query("email")
 	tipoPessoa 		:= c.Query("tipo_pessoa")
 	usuarioSistema 	:= c.Query("usuario_sistema")
+	fullTextSearch 	:= c.Query("search")
 
-	content := services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa, usuarioSistema)
+	var content models.Pessoas
+
+	if fullTextSearch == "" {
+		content = services.GetPessoas(pessoaId, ativo, nome, email, tipoPessoa, usuarioSistema)
+	} else {
+		content = services.GetPessoasByFullTextSearch(fullTextSearch, tipoPessoa, ativo)
+	}
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
