@@ -6,20 +6,44 @@ import (
 
 func GetContas(descricao string, tipoConta string, ativo string) models.Contas {
 
-	descricaoQuery 	:= (map[bool]string{true: "descricao LIKE '%" + descricao + "%' AND ", false: ""}) 	[descricao != ""]
-	tipoContaQuery 	:= (map[bool]string{true: "tipo_conta = '" + tipoConta + "' AND ", false: ""}) 		[tipoConta != ""]
-	situacaoQuery 	:= (map[bool]string{true: "ativo = '" + ativo + "' AND ", false: ""}) 				[ativo != ""]
-	
-	commit := descricaoQuery + tipoContaQuery + situacaoQuery
-	if commit != "" {
-		commit = commit[:len(commit)-4]
+	var contas models.Contas
+
+	db := Con
+
+	if descricao != "" {
+		db = db.Where("descricao iLIKE ?", "%" + descricao + "%")
 	}
+
+	if tipoConta != "" {
+		db = db.Where("tipo_conta iLIKE ?", "%" + tipoConta + "%")	
+	}
+
+	if ativo != "" {
+		db = db.Where("ativo = ?", ativo)
+	}
+ 
+	db.Find(&contas)
+
+    return contas
+}
+
+func GetContasByFullTextSearch(text string, tipoConta string, ativo string) models.Contas {
 
 	var contas models.Contas
 
-	Con.Where(commit).Find(&contas)
+	db := Con
 
-    return contas
+	if tipoConta != "" {
+		db = db.Where("tipo_conta = ?", tipoConta)
+	}
+
+	if ativo != "" {
+		db = db.Where("ativo = ?", ativo)
+	}
+
+	db.Where(`descricao iLIKE ?`, "%" + text + "%").Find(&contas)
+
+	return contas
 }
 
 func GetConta(contaId int64) models.Conta {

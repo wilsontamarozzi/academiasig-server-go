@@ -19,11 +19,11 @@ func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPe
 	}
 
 	if nome != "" {
-		db = db.Where("nome LIKE ?", "%" + nome + "%")	
+		db = db.Where("nome iLIKE ?", "%" + nome + "%")	
 	}
 
 	if email != "" {
-		db = db.Where("email LIKE ?", "%" + email + "%")
+		db = db.Where("email iLIKE ?", "%" + email + "%")
 	}
 
 	if usuarioSistema != "" {
@@ -45,8 +45,6 @@ func GetPessoasByFullTextSearch(text string, tipoPessoa string, ativo string) mo
 
 	db := Con
 
-	db = db.Table("pessoa").Select("*")
-
 	if tipoPessoa != "" {
 		db = db.Where("tipo_pessoa = ?", tipoPessoa)
 	}
@@ -55,14 +53,25 @@ func GetPessoasByFullTextSearch(text string, tipoPessoa string, ativo string) mo
 		db = db.Where("ativo = ?", ativo)
 	}
 
-	db = db.Where(`MATCH(nome, observacao, suporte, complemento, 
-			cpf, rg, telefone_celular, telefone_empresa, 
-			telefone_residencial, cnpj, fax, 
-			inscricao_estadual, inscricao_municipal, 
-			razao_social, telefone_comercial, website) 
-		AGAINST(?)`, text)
-
-	db.Scan(&pessoas)
+	db.Where(`
+		nome || ' ' || 
+		email || ' ' || 
+		observacao || ' ' || 
+		observacao || ' ' || 
+		suporte || ' ' || 
+		complemento || ' ' || 
+		cpf || ' ' || 
+		rg || ' ' || 
+		telefone_celular || ' ' || 
+		telefone_empresa || ' ' || 
+		telefone_residencial || ' ' || 
+		cnpj || ' ' || 
+		inscricao_estadual || ' ' || 
+		inscricao_municipal || ' ' || 
+		razao_social || ' ' || 
+		telefone_comercial || ' ' || 
+		website iLIKE ?`, "%" + text + "%").
+	Find(&pessoas)
 
 	return pessoas
 }

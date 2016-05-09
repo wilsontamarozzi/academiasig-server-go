@@ -10,11 +10,18 @@ import (
 
 func GetContas(c *gin.Context) {
 	
-	descricao 	:= c.Query("descricao")
-	tipoConta 	:= c.Query("tipo_conta")
-	ativo 		:= c.Query("ativo")
+	descricao 		:= c.Query("descricao")
+	tipoConta 		:= c.Query("tipo_conta")
+	ativo 			:= c.Query("ativo")
+	fullTextSearch 	:= c.Query("search")
 	
-	content := services.GetContas(descricao, tipoConta, ativo)
+	var content models.Contas
+
+	if fullTextSearch == "" {
+		content = services.GetContas(descricao, tipoConta, ativo)
+	} else {
+		content = services.GetContasByFullTextSearch(fullTextSearch, tipoConta, ativo)
+	}
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})

@@ -10,10 +10,17 @@ import (
 
 func GetBancos(c *gin.Context) {
 	
-	nome := c.Query("nome")
-	numero := c.Query("numero")
-	
-	content := services.GetBancos(nome, numero)
+	nome 			:= c.Query("nome")
+	numero 			:= c.Query("numero")
+	fullTextSearch 	:= c.Query("search")
+
+	var content models.Bancos
+
+	if fullTextSearch == "" {
+		content = services.GetBancos(nome, numero)
+	} else {
+		content = services.GetBancosByFullTextSearch(fullTextSearch)
+	}
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})

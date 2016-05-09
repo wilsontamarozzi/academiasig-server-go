@@ -49,6 +49,10 @@ func (c Conta) IsValid() map[string][]string {
 			if c.Conta <= 0 {
 				err["conta"] = append(err["conta"], "Conta não pode estar vázio.")
 			}
+
+			if c.BancoId == nil {
+				err["banco"] = append(err["banco"], "Informe um banco.")
+			}
 		}
 	}
 

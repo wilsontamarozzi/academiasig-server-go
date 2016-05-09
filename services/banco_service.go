@@ -6,19 +6,37 @@ import (
 
 func GetBancos(nome string, numero string) models.Bancos {
 
-	nomeQuery := (map[bool]string{true: "nome LIKE '%" + nome + "%' AND ", false: ""}) [nome != ""]
-	numeroQuery := (map[bool]string{true: "numero LIKE '%" + numero + "%' AND ", false: ""}) [numero != ""]
-	
-	commit := nomeQuery + numeroQuery
-	if commit != "" {
-		commit = commit[:len(commit)-4]
+	var bancos models.Bancos
+
+	db := Con
+
+	db = db.Table("banco").Select("*")
+
+	if nome != "" {
+		db = db.Where("nome iLIKE ?", "%" + nome + "%")
 	}
+
+	if numero != "" {
+		db = db.Where("numero iLIKE ?", "%" + numero + "%")
+	}
+
+	db.Find(&bancos)
+
+    return bancos
+}
+
+func GetBancosByFullTextSearch(text string) models.Bancos {
 
 	var bancos models.Bancos
 
-	Con.Where(commit).Find(&bancos)
+	db := Con
 
-    return bancos
+	db.Where(`
+		nome || ' ' || 
+		numero iLIKE ?`, "%" + text + "%").
+	Find(&bancos)
+
+	return bancos
 }
 
 func GetBanco(bancoId int64) models.Banco {
