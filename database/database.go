@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/jinzhu/gorm"
-  _ "academiasig-api/services/models"
+  "academiasig-api/services/models"
   _ "github.com/jinzhu/gorm/dialects/mysql"
   _ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -51,7 +51,7 @@ func autoPopulate(db *gorm.DB) {
   pessoa.UsuarioSistema = true
 
   db.Set("gorm:save_associations", false).Create(&pessoa)
-  
+
   var usuario models.Usuario
 
   usuario.PessoaId = 1
