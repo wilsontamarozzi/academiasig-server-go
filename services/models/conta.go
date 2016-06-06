@@ -1,7 +1,11 @@
 package models
 
+import(
+	"github.com/satori/go.uuid"
+)
+
 type Conta struct {
-	Id 					int64		`gorm:"primary_key;" sql:"AUTO_INCREMENT"`
+	UUID 				uuid.UUID		`gorm:"primary_key:true"`
 	TipoConta			string
 	Ativo 				*bool
 	Descricao			string
@@ -15,13 +19,13 @@ type Conta struct {
 
 	SaldoInicial		float64
 	
-	BancoId				*int64 
-	TitularId			*int64 
-	OperadoraId			*int64
+	BancoUUID			uuid.UUID 
+	TitularUUID			uuid.UUID
+	OperadoraUUID		uuid.UUID
 
-	Banco 				*Banco 		`gorm:"foreignkey:banco_id;associationforeignkey:id"`
-	Titular 			*Pessoa 	`gorm:"foreignkey:titular_id;associationforeignkey:id"`
-	Operadora 			*Pessoa 	`gorm:"foreignkey:operadora_id;associationforeignkey:id"`
+	Banco 				*Banco 		`gorm:"foreignkey:banco_uuid;associationforeignkey:uuid"`
+	Titular 			*Pessoa 	`gorm:"foreignkey:titular_uuid;associationforeignkey:uuid"`
+	Operadora 			*Pessoa 	`gorm:"foreignkey:operadora_uuid;associationforeignkey:uuid"`
 }
 
 type Contas []Conta
@@ -50,9 +54,11 @@ func (c Conta) IsValid() map[string][]string {
 				err["conta"] = append(err["conta"], "Conta não pode estar vázio.")
 			}
 
-			if c.BancoId == nil {
+			/*
+			if len(c.BancoUUID) < 0 {
 				err["banco"] = append(err["banco"], "Informe um banco.")
 			}
+			*/	
 		}
 	}
 

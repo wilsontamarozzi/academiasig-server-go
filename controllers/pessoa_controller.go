@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
 	"academiasig-api/services/models"
@@ -49,7 +47,7 @@ func GetPessoas(c *gin.Context) {
 */
 func GetPessoa(c *gin.Context) {
 
-	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	pessoaId := c.Params.ByName("id")
 
 	content := services.GetPessoa(pessoaId)
 
@@ -69,7 +67,7 @@ func GetPessoa(c *gin.Context) {
 */
 func DeletePessoa(c *gin.Context) {
 
-	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	pessoaId := c.Params.ByName("id")
 
 	pessoa := services.GetPessoa(pessoaId)
 
@@ -105,7 +103,7 @@ func CreatePessoa(c *gin.Context) {
 	} else {
 		pessoa = services.CreatePessoa(pessoa)
 		
-		if pessoa.Id > 0 {
+		if len(pessoa.UUID) > 0 {
 			c.JSON(201, pessoa)
 		} else {
 			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
@@ -121,9 +119,9 @@ func CreatePessoa(c *gin.Context) {
 	Rota: /pessoas/{id:[0-9]+}
 */
 func UpdatePessoa(c *gin.Context) {
-
-	pessoaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
 	
+	pessoaId := c.Params.ByName("id")
+
 	err := services.GetPessoa(pessoaId)
 
 	if err == (models.Pessoa{}) {

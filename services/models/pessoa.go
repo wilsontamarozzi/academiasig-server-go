@@ -1,14 +1,14 @@
 package models
 
 import (
-	_"time"
+	"time"
+	"github.com/satori/go.uuid"
 )
 
 type Pessoa struct {
-	Id 					int64				`gorm:"primary_key; AUTO_INCREMENT"`
-	AdmCadastroId		int64
-	LogradouroId 		int64
-	//DataCadastro		time.Time
+	UUID 				uuid.UUID		`gorm:"primary_key:true"`
+	Codigo 				int64
+	DataCadastro		time.Time 		`gorm:"default:'NOW()'"`
 	Ativo				bool
 	Email				string 
 	Nome 				string
@@ -18,7 +18,7 @@ type Pessoa struct {
 	Complemento			string
 	Numero				string
 	Sexo				*bool
-	//DataNascimento		time.Time
+	DataNascimento		time.Time
 	Cpf 				string
 	Rg					string
 	TelefoneResidencial	string
@@ -33,7 +33,11 @@ type Pessoa struct {
 	Website				string
 	InscricaoEstadual	string
 	InscricaoMunicipal	string
-	Usuario				*Usuario 		`gorm:"ForeignKey:pessoa_id;AssociationForeignKey:id"`
+
+	AdmCadastroId		int64
+	LogradouroId 		int64
+
+	Usuario				*Usuario 		`gorm:"ForeignKey:pessoa_uuid;AssociationForeignKey:uuid"`
 	Logradouro 			Logradouro 		`gorm:"ForeignKey:endereco_codigo;AssociationForeignKey:logradouro_id"`
 }
 

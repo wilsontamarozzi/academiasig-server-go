@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"academiasig-api/services"
 	"academiasig-api/services/models"
@@ -32,7 +30,7 @@ func GetContas(c *gin.Context) {
 
 func GetConta(c *gin.Context) {
 
-	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	contaId := c.Params.ByName("id")
 
 	content := services.GetConta(contaId)
 
@@ -45,7 +43,7 @@ func GetConta(c *gin.Context) {
 
 func DeleteConta(c *gin.Context) {
 
-	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	contaId := c.Params.ByName("id")
 
 	conta := services.GetConta(contaId)
 
@@ -74,7 +72,7 @@ func CreateConta(c *gin.Context) {
 	} else {
 		conta = services.CreateConta(conta)
 		
-		if conta.Id > 0 {
+		if len(conta.UUID) > 0 {
 			c.JSON(201, conta)
 		} else {
 			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
@@ -84,7 +82,7 @@ func CreateConta(c *gin.Context) {
 
 func UpdateConta(c *gin.Context) {
 
-	contaId, _ := strconv.ParseInt(c.Params.ByName("id"), 0, 64)
+	contaId := c.Params.ByName("id")
 	
 	err := services.GetConta(contaId)
 

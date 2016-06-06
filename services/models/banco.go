@@ -1,7 +1,7 @@
 package models
 
 type Banco struct {
-	Id 		int64	`gorm:"primary_key:true;" sql:"AUTO_INCREMENT"`
+	UUID 	string	`gorm:"primary_key:true;"`
 	Numero	string
 	Nome	string
 }

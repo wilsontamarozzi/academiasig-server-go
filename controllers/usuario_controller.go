@@ -21,3 +21,16 @@ func AuthenticationUser(c *gin.Context) {
 
 	c.JSON(200, content)
 }
+
+func GetUsuarios(c *gin.Context) {
+	
+	var content models.Pessoas
+
+	content = services.GetUsuarios()
+
+	if len(content) <= 0 {
+		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
+	} else {
+		c.JSON(200, content)
+	}
+}

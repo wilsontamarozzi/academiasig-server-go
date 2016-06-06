@@ -6,12 +6,22 @@ import (
 
 func AuthenticationUser(user string, password string) models.Pessoa {
 
-	var pessoa models.Pessoa
+	var usuario models.Pessoa
 
 	Con.Preload("Usuario").		
-		Joins("JOIN usuario ON usuario.pessoa_id = pessoa.id").
+		Joins("JOIN usuario ON usuario.pessoa_uuid = pessoa.uuid").
 		Where("usuario.login = ? AND usuario.senha = ?", user, password).
-		First(&pessoa)
+		First(&usuario)
 
-	return pessoa
+	return usuario
+}
+
+func GetUsuarios() models.Pessoas {
+
+	var usuarios models.Pessoas
+
+	Con.Where("usuario_sistema = true").
+		First(&usuarios)
+
+	return usuarios
 }

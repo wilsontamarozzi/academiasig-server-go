@@ -11,7 +11,7 @@ func GetPessoas(pessoaId string, ativo string, nome string, email string, tipoPe
 	db := Con
 
 	if pessoaId != "" {
-		db = db.Where("id = ?", pessoaId)
+		db = db.Where("uuid = ?", pessoaId)
 	}
 
 	if ativo != "" {
@@ -76,19 +76,20 @@ func GetPessoasByFullTextSearch(text string, tipoPessoa string, ativo string) mo
 	return pessoas
 }
 
-func GetPessoa(pessoaId int64) models.Pessoa {
+func GetPessoa(pessoaId string) models.Pessoa {
 
 	var pessoa models.Pessoa
 
 	Con.Preload("Logradouro.Bairro.Cidade.Estado").
 		Preload("Usuario").
-		First(&pessoa, pessoaId)
+		Where("uuid = ?", pessoaId).
+		First(&pessoa)
 
 	return pessoa
 }
 
-func DeletePessoa(pessoaId int64) error {
-	err := Con.Where("id = ?", pessoaId).Delete(&models.Pessoa{}).Error
+func DeletePessoa(pessoaId string) error {
+	err := Con.Where("uuid = ?", pessoaId).Delete(&models.Pessoa{}).Error
 
 	return err
 }

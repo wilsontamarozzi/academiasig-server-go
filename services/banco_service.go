@@ -39,17 +39,18 @@ func GetBancosByFullTextSearch(text string) models.Bancos {
 	return bancos
 }
 
-func GetBanco(bancoId int64) models.Banco {
+func GetBanco(bancoId string) models.Banco {
 
 	var banco models.Banco
 
-	Con.First(&banco, bancoId)
+	Con.Where("uuid = ?", bancoId).
+		First(&banco)
 
 	return banco
 }
 
-func DeleteBanco(bancoId int64) error {
-	err := Con.Where("id = ?", bancoId).Delete(&models.Banco{}).Error
+func DeleteBanco(bancoId string) error {
+	err := Con.Where("uuid = ?", bancoId).Delete(&models.Banco{}).Error
 
 	return err
 }

@@ -46,20 +46,21 @@ func GetContasByFullTextSearch(text string, tipoConta string, ativo string) mode
 	return contas
 }
 
-func GetConta(contaId int64) models.Conta {
+func GetConta(contaId string) models.Conta {
 
 	var conta models.Conta
 
 	Con.Preload("Banco").
 		Preload("Titular").
 		Preload("Operadora").
-		First(&conta, contaId)
+		Where("uuid = ?", contaId).
+		First(&conta)
 
 	return conta
 }
 
-func DeleteConta(contaId int64) error {
-	err := Con.Where("id = ?", contaId).Delete(&models.Conta{}).Error
+func DeleteConta(contaId string) error {
+	err := Con.Where("uuid = ?", contaId).Delete(&models.Conta{}).Error
 
 	return err
 }

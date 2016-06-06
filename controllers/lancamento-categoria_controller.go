@@ -6,18 +6,17 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetBancos(c *gin.Context) {
+func GetCategorias(c *gin.Context) {
 	
 	nome 			:= c.Query("nome")
-	numero 			:= c.Query("numero")
 	fullTextSearch 	:= c.Query("search")
 
-	var content models.Bancos
+	var content models.LancamentoCategorias
 
 	if fullTextSearch == "" {
-		content = services.GetBancos(nome, numero)
+		content = services.GetCategorias(nome)
 	} else {
-		content = services.GetBancosByFullTextSearch(fullTextSearch)
+		content = services.GetCategoriasByFullTextSearch(fullTextSearch)
 	}
 
 	if len(content) <= 0 {
@@ -27,29 +26,29 @@ func GetBancos(c *gin.Context) {
 	}
 }
 
-func GetBanco(c *gin.Context) {
+func GetCategoria(c *gin.Context) {
 
-	bancoId := c.Params.ByName("id")
+	categoriaId := c.Params.ByName("id")
 
-	content := services.GetBanco(bancoId)
+	content := services.GetCategoria(categoriaId)
 
-	if content == (models.Banco{}) {
+	if content == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
 		c.JSON(200, content)
 	}	
 }
 
-func DeleteBanco(c *gin.Context) {
+func DeleteCategoria(c *gin.Context) {
 
-	bancoId := c.Params.ByName("id")
+	categoriaId := c.Params.ByName("id")
 
-	banco := services.GetBanco(bancoId)
+	categoria := services.GetCategoria(categoriaId)
 
-	if banco == (models.Banco{}) {
+	if categoria == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
-		err := services.DeleteBanco(bancoId)
+		err := services.DeleteCategoria(categoriaId)
 
 		if err == nil {
 			c.Writer.WriteHeader(204)
@@ -59,47 +58,47 @@ func DeleteBanco(c *gin.Context) {
 	}
 }
 
-func CreateBanco(c *gin.Context) {
+func CreateCategoria(c *gin.Context) {
 
-	var banco models.Banco
-	c.Bind(&banco)
+	var categoria models.LancamentoCategoria
+	c.Bind(&categoria)
 
-	err := banco.IsValid()
+	err := categoria.IsValid()
 
 	if len(err) > 0 {
 		c.JSON(422, gin.H{"errors" : err})
 	} else {
-		banco = services.CreateBanco(banco)
+		categoria = services.CreateCategoria(categoria)
 		
-		if len(banco.UUID) > 0 {
-			c.JSON(201, banco)
+		if len(categoria.UUID) > 0 {
+			c.JSON(201, categoria)
 		} else {
 			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 		}
 	}
 }
 
-func UpdateBanco(c *gin.Context) {
+func UpdateCategoria(c *gin.Context) {
 
-	bancoId := c.Params.ByName("id")
+	categoriaId := c.Params.ByName("id")
 	
-	err := services.GetBanco(bancoId)
+	err := services.GetCategoria(categoriaId)
 
-	if err == (models.Banco{}) {
+	if err == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
-		var banco models.Banco
-		c.Bind(&banco)
+		var categoria models.LancamentoCategoria
+		c.Bind(&categoria)
 
-		err := banco.IsValid()
+		err := categoria.IsValid()
 
 		if len(err) > 0 {
 			c.JSON(422, gin.H{"errors" : err})
 		} else {
-			err := services.UpdateBanco(banco)
+			err := services.UpdateCategoria(categoria)
 
 			if err == nil {
-				c.JSON(201, banco)
+				c.JSON(201, categoria)
 			} else {
 				c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 			}

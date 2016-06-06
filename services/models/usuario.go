@@ -1,8 +1,12 @@
 package models
 
+import(
+	"github.com/satori/go.uuid"
+)
+
 type Usuario struct {
-	Id 				uint64	`gorm:"primary_key; AUTO_INCREMENT"`
-	PessoaId 		int64
+	UUID			uuid.UUID	`gorm:"primary_key;"`
+	PessoaUUID 		uuid.UUID
 	Ativo			bool
 	Login			string
 	Senha 			string
