@@ -6,18 +6,13 @@ import (
 	"academiasig-api/services/models"
 )
 
-func GetCategorias(c *gin.Context) {
+func GetLancamentoCategorias(c *gin.Context) {
 	
-	nome 			:= c.Query("nome")
-	fullTextSearch 	:= c.Query("search")
+	lancamentoUUID := c.Query("lancamento-uuid")
 
 	var content models.LancamentoCategorias
 
-	if fullTextSearch == "" {
-		content = services.GetCategorias(nome)
-	} else {
-		content = services.GetCategoriasByFullTextSearch(fullTextSearch)
-	}
+	content = services.GetLancamentoCategorias(lancamentoUUID)
 
 	if len(content) <= 0 {
 		c.JSON(404, gin.H{"Error": "404", "message": "Registros não encontrado."})
@@ -26,11 +21,11 @@ func GetCategorias(c *gin.Context) {
 	}
 }
 
-func GetCategoria(c *gin.Context) {
+func GetLancamentoCategoria(c *gin.Context) {
 
-	categoriaId := c.Params.ByName("id")
+	lancamentoCategoriaId := c.Params.ByName("id")
 
-	content := services.GetCategoria(categoriaId)
+	content := services.GetLancamentoCategoria(lancamentoCategoriaId)
 
 	if content == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
@@ -39,16 +34,16 @@ func GetCategoria(c *gin.Context) {
 	}	
 }
 
-func DeleteCategoria(c *gin.Context) {
+func DeleteLancamentoCategoria(c *gin.Context) {
 
-	categoriaId := c.Params.ByName("id")
+	lancamentoCategoriaId := c.Params.ByName("id")
 
-	categoria := services.GetCategoria(categoriaId)
+	lancamentoCategoria := services.GetLancamentoCategoria(lancamentoCategoriaId)
 
-	if categoria == (models.LancamentoCategoria{}) {
+	if lancamentoCategoria == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
-		err := services.DeleteCategoria(categoriaId)
+		err := services.DeleteLancamentoCategoria(lancamentoCategoriaId)
 
 		if err == nil {
 			c.Writer.WriteHeader(204)
@@ -58,47 +53,47 @@ func DeleteCategoria(c *gin.Context) {
 	}
 }
 
-func CreateCategoria(c *gin.Context) {
+func CreateLancamentoCategoria(c *gin.Context) {
 
-	var categoria models.LancamentoCategoria
-	c.Bind(&categoria)
+	var lancamentoCategoria models.LancamentoCategoria
+	c.Bind(&lancamentoCategoria)
 
-	err := categoria.IsValid()
+	err := lancamentoCategoria.IsValid()
 
 	if len(err) > 0 {
 		c.JSON(422, gin.H{"errors" : err})
 	} else {
-		categoria = services.CreateCategoria(categoria)
+		lancamentoCategoria = services.CreateLancamentoCategoria(lancamentoCategoria)
 		
-		if len(categoria.UUID) > 0 {
-			c.JSON(201, categoria)
+		if len(lancamentoCategoria.UUID) > 0 {
+			c.JSON(201, lancamentoCategoria)
 		} else {
 			c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 		}
 	}
 }
 
-func UpdateCategoria(c *gin.Context) {
+func UpdateLancamentoCategoria(c *gin.Context) {
 
-	categoriaId := c.Params.ByName("id")
+	lancamentoCategoriaId := c.Params.ByName("id")
 	
-	err := services.GetCategoria(categoriaId)
+	err := services.GetLancamentoCategoria(lancamentoCategoriaId)
 
 	if err == (models.LancamentoCategoria{}) {
 		c.JSON(404, gin.H{"Status": "404", "message": "Registro não encontrado."})
 	} else {
-		var categoria models.LancamentoCategoria
-		c.Bind(&categoria)
+		var lancamentoCategoria models.LancamentoCategoria
+		c.Bind(&lancamentoCategoria)
 
-		err := categoria.IsValid()
+		err := lancamentoCategoria.IsValid()
 
 		if len(err) > 0 {
 			c.JSON(422, gin.H{"errors" : err})
 		} else {
-			err := services.UpdateCategoria(categoria)
+			err := services.UpdateLancamentoCategoria(lancamentoCategoria)
 
 			if err == nil {
-				c.JSON(201, categoria)
+				c.JSON(201, lancamentoCategoria)
 			} else {
 				c.JSON(500, gin.H{"Status": "500", "Message": "Houve um erro no servidor."})
 			}

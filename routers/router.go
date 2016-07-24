@@ -28,8 +28,11 @@ func InitRoutes() *gin.Engine {
     v1 = AddRoutesConta(v1)
     v1 = AddRoutesTarefa(v1)
     v1 = AddRoutesTarefaCategoria(v1)
-    v1 = AddRoutesLancamentoCategoriaGrupo(v1)
+    v1 = AddRoutesFinanceiroCategoriaGrupo(v1)
+    v1 = AddRoutesFinanceiroCategoria(v1)
+    v1 = AddRoutesLancamento(v1)
     v1 = AddRoutesLancamentoCategoria(v1)
+    v1 = AddRoutesLancamentoMovimentacao(v1)
 
 	return r
 }

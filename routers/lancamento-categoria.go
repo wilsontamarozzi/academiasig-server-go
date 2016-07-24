@@ -7,11 +7,11 @@ import (
 
 func AddRoutesLancamentoCategoria(r *gin.RouterGroup) *gin.RouterGroup {
 
-    r.GET("/lancamento-categorias", controllers.GetCategorias)
-    r.GET("/lancamento-categorias/:id", controllers.GetCategoria)
-    r.DELETE("/lancamento-categorias/:id", controllers.DeleteCategoria)
-    r.POST("/lancamento-categorias", controllers.CreateCategoria)
-    r.PUT("/lancamento-categorias/:id", controllers.UpdateCategoria)
+    r.GET("/lancamento-categorias", controllers.GetLancamentoCategorias)
+    r.GET("/lancamento-categorias/:id", controllers.GetLancamentoCategoria)
+    r.DELETE("/lancamento-categorias/:id", controllers.DeleteLancamentoCategoria)
+    r.POST("/lancamento-categorias", controllers.CreateLancamentoCategoria)
+    r.PUT("/lancamento-categorias/:id", controllers.UpdateLancamentoCategoria)
 
     return r
 }
